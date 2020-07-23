@@ -1,0 +1,34 @@
+{
+  "name": "erebes",
+  "version": "1.0.0",
+  "description": "A minimal Electron + React",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "repository": "https://github.com/Leandro1992/erebes.git",
+  "keywords": [
+    "Electron",
+    "electron-builder",
+    "Express",
+    "demo",
+    "ReactJS"
+  ],
+  "build": {
+    "appId": "com.jamzi.bacer",
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    }
+  },
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^9.1.1",
+    "electron-builder": "^22.7.0"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
