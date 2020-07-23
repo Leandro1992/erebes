@@ -1,4 +1,6 @@
-# electron-quick-start
+# Electron React Electron-Build Express Server
+
+# This project is based on electron-quick-start (https://github.com/electron/electron-quick-start)
 
 **Clone and run for a quick way to see Electron in action.**
 
