@@ -1,6 +1,7 @@
 const BP = require('./bp.js');
 const DRE = require('./dre.js');
 const DFC = require('./dfc.js');
+const DRA = require('./dfc.js');
 const DMPL = require('./dmpl.js');
 const excelToJson = require('convert-excel-to-json');
 const formidable = require('formidable');
@@ -52,6 +53,17 @@ exports.initControllers = (app) => {
                         header: {
                             rows: 5
                         }
+                    },
+                    {
+                        name: 'DRA',
+                        columnToKey: {
+                            B: 'item',
+                            C: 'Data1',
+                            D: 'Data2',
+                        },
+                        header: {
+                            rows: 5
+                        }
                     }
                 ]
             });
@@ -73,9 +85,9 @@ exports.initControllers = (app) => {
                         }
                     ],
                     "BalancoPatrimonial": data,
-                    "DemonstracaoDoResultado":{},
+                    "DemonstracaoDoResultado": {},
                     "DemonstracaoDoResultadoAbrangente": {},
-                    "DemonstracaoDosFluxosDeCaixa":{},
+                    "DemonstracaoDosFluxosDeCaixa": {},
                     "DemonstracaoDasMutacoesDoPatrimonioLiquido": {},
                     "DemonstracaoDosRecursosDeConsorcioConsolidada": {},
                     "DemonstracaoDeVariacoesNasDisponibilidadesDeGruposConsolidada": {}
@@ -85,7 +97,10 @@ exports.initControllers = (app) => {
                     header["DemonstracaoDoResultado"] = data;
                     DFC.getDFCJSON(sheets).then((dfc) => {
                         header["DemonstracaoDosFluxosDeCaixa"] = dfc;
-                        res.send(header);
+                        DRA.getDRAJSON(sheets).then((dra) => {
+                            header["DemonstracaoDoResultadoAbrangente"] = dra;
+                            res.send(header);
+                        });
                     });
                 });
             }).catch(e => {
