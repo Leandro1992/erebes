@@ -1,7 +1,7 @@
 const BP = require('./bp.js');
 const DRE = require('./dre.js');
 const DFC = require('./dfc.js');
-const DRA = require('./dfc.js');
+const DRA = require('./dra.js');
 const DMPL = require('./dmpl.js');
 const excelToJson = require('convert-excel-to-json');
 const formidable = require('formidable');
@@ -64,6 +64,19 @@ exports.initControllers = (app) => {
                         header: {
                             rows: 5
                         }
+                    },
+                    {
+                        name: 'DMPL',
+                        columnToKey: {
+                            B: 'item',
+                            C: 'Data1',
+                            D: 'Data2',
+                            E: 'Data3',
+                            F: 'Data4',
+                        },
+                        header: {
+                            rows: 5
+                        }
                     }
                 ]
             });
@@ -93,13 +106,30 @@ exports.initControllers = (app) => {
                     "DemonstracaoDeVariacoesNasDisponibilidadesDeGruposConsolidada": {}
 
                 }
+
+                if(fields && fields.database3){
+                    header['datasBaseReferencia'].push( {
+                        "@id": "dt3",
+                        "@data": fields.database3.split("-").reverse().join("")
+                    })
+                    if(fields.database4){
+                        header['datasBaseReferencia'].push( {
+                            "@id": "dt4",
+                            "@data": fields.database4.split("-").reverse().join("")
+                        })
+                    }
+                }
+
                 DRE.getDREJSON(sheets).then((data) => {
                     header["DemonstracaoDoResultado"] = data;
                     DFC.getDFCJSON(sheets).then((dfc) => {
                         header["DemonstracaoDosFluxosDeCaixa"] = dfc;
                         DRA.getDRAJSON(sheets).then((dra) => {
                             header["DemonstracaoDoResultadoAbrangente"] = dra;
-                            res.send(header);
+                            DMPL.getDMPLJSON(sheets).then((dmpl) => {
+                                header["DemonstracaoDasMutacoesDoPatrimonioLiquido"] = dmpl;
+                                res.send(header);
+                            });
                         });
                     });
                 });

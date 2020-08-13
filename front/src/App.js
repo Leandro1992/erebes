@@ -19,6 +19,9 @@ const useStyles = makeStyles(theme => ({
   menuButton: {
     marginRight: theme.spacing(2),
   },
+  myButton: {
+    marginRight: theme.spacing(2),
+  },
   title: {
     color: 'white',
     flexGrow: 1,
@@ -36,10 +39,30 @@ function App() {
   const [database, setDatabase] = useState("");
   const [database1, setDatabase1] = useState("");
   const [database2, setDatabase2] = useState("");
+  const [database3, setDatabase3] = useState("");
+  const [database4, setDatabase4] = useState("");
   const [json, setJSON] = useState(JSON.stringify({ "Exemple": "Exemple", "Exemple2": "Exemple2" }, null, 2));
 
   const handleImageInput = event => {
     setPath(event.target.files[0])
+  }
+
+  // const handleSaveToPC = (filename) => {
+  //   const fileData = json;
+  //   const blob = new Blob([fileData], {type: "text/plain"});
+  //   const url = URL.createObjectURL(blob);
+  //   const link = document.createElement('a');
+  //   link.download = `demonstracoes_financeiras.json`;
+  //   link.href = url;
+  //   link.click();
+  // }
+
+  const handleSaveToPC = (filename) => {
+    const dataUrl = `data:application/json,${json}`
+    const link = document.createElement('a');
+    link.download = `demonstracoes_financeiras.json`;
+    link.href = dataUrl;
+    link.click();
   }
 
   const generateJSON = () => {
@@ -52,6 +75,8 @@ function App() {
     formData.append("database", database);
     formData.append("database1", database1);
     formData.append("database2", database2);
+    formData.append("database3", database3);
+    formData.append("database4", database4);
 
     axios.post('/api/upload', formData, {
       headers: {
@@ -189,7 +214,34 @@ function App() {
                   shrink: true,
                 }}
               />
-              <Button variant="contained" onClick={generateJSON} color="primary">Gerar</Button>
+              <TextField
+                id="date3"
+                fullWidth
+                margin="normal"
+                label="Data Referência 3"
+                value={database3}
+                onChange={(e) => setDatabase3(e.target.value)}
+                type="month"
+                variant="filled"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              <TextField
+                id="date4"
+                fullWidth
+                margin="normal"
+                label="Data Referência 4"
+                value={database4}
+                onChange={(e) => setDatabase4(e.target.value)}
+                type="month"
+                variant="filled"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              <Button className={classes.myButton} variant="contained" onClick={generateJSON} color="primary">Gerar</Button>
+              <Button className={classes.myButton} variant="contained" onClick={handleSaveToPC} color="primary">Download</Button>
             </Grid>
             <Grid item xs={6}>
               <Box>
