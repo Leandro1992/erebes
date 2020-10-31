@@ -81,12 +81,11 @@ exports.initControllers = (app) => {
                 ]
             });
             BP.getBPJSON(sheets).then((bp) => {
-                console.log(bp, "éooq?")
                 let header = {
                     "@cnpj": fields.cnpj,
                     "@codigoDocumento": fields.doc,
                     "@tipoRemessa": fields.remessa,
-                    "@unidadeMedida": fields.unidade,
+                    "@unidadeMedida": parseInt(fields.unidade),
                     "@dataBase": fields.database,
                     "datasBaseReferencia": [
                         {
@@ -126,22 +125,22 @@ exports.initControllers = (app) => {
                 DRE.getDREJSON(sheets).then((data) => {
                     header["DemonstracaoDoResultado"] = data;
                     if(data.contas.length == 0){
-                        delete header["DemonstracaoDoResultado"]
+                        header["DemonstracaoDoResultado"] = {};
                     }
                     DFC.getDFCJSON(sheets).then((dfc) => {
                         header["DemonstracaoDosFluxosDeCaixa"] = dfc;
                         if(dfc.contas.length == 0){
-                            delete header["DemonstracaoDosFluxosDeCaixa"]
+                            header["DemonstracaoDosFluxosDeCaixa"] = {};
                         }
                         DRA.getDRAJSON(sheets).then((dra) => {
                             header["DemonstracaoDoResultadoAbrangente"] = dra;
                             if(dra.contas.length == 0){
-                                delete header["DemonstracaoDoResultadoAbrangente"]
+                                header["DemonstracaoDoResultadoAbrangente"] = {};
                             }
                             DMPL.getDMPLJSON(sheets).then((dmpl) => {
                                 header["DemonstracaoDasMutacoesDoPatrimonioLiquido"] = dmpl;
                                 if(dmpl.contas.length == 0){
-                                    delete header["DemonstracaoDasMutacoesDoPatrimonioLiquido"]
+                                    header["DemonstracaoDasMutacoesDoPatrimonioLiquido"] = {};
                                 }
                                 res.send(header);
                             });

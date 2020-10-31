@@ -35,7 +35,7 @@ function App() {
   const [cnpj, setCNPJ] = useState("");
   const [doc, setDoc] = useState("");
   const [remessa, setRemessa] = useState("");
-  const [unidade, setUnindade] = useState("");
+  const [unidade, setUnindade] = useState(0);
   const [database, setDatabase] = useState("");
   const [database1, setDatabase1] = useState("");
   const [database2, setDatabase2] = useState("");
@@ -78,7 +78,7 @@ function App() {
     formData.append("database3", database3);
     formData.append("database4", database4);
 
-    axios.post('http://localhost:3000/api/upload', formData, {
+    axios.post('/api/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -166,7 +166,7 @@ function App() {
                 fullWidth
                 margin="normal"
                 onChange={(e) => setUnindade(e.target.value)}
-                type="text"
+                type="number"
                 value={unidade}
                 InputLabelProps={{
                   shrink: true,

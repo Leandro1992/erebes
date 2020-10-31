@@ -46,7 +46,7 @@ const calcLevelAndFather = (lastnivel, level) => {
                 if (level == 0) {
                     split[split.length - 1] = ((+split[split.length - 1]) + 1) + "";
                     let nivel = split.join(".");
-                    let father = null
+                    let father = ""
                     id += 1;
                     levels[level].push({ nivel, id, father })
                     referenceNivel = { nivel, id, father };
@@ -97,9 +97,9 @@ const getDREJSON = async (sheets) => {
                 let nextLevel = await calcLevelAndFather(referenceNivel, x.level)
                 result.push({
                     "@id": nextLevel.id + "",
-                    "@nivel": nextLevel.nivel,
+                    "@nivel": nextLevel.nivel + "",
                     "@descricao": x.item.trim(),
-                    "@contaPai": nextLevel.father,
+                    "@contaPai": nextLevel.father + "",
                     "valoresIndividualizados": [
                         {
                             "@dtBase": "dt1",
