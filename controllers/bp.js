@@ -324,7 +324,8 @@ const getBPJSON = async (sheets) => {
                 }
     
                 if (i == buff.length - 1) {
-                   let result = await nivelGerenate(data);
+                   let info = await nivelGerenate(data);
+                    let result = {'contas': info}
                    resolve(result);
                 }
             })

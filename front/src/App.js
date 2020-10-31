@@ -78,7 +78,7 @@ function App() {
     formData.append("database3", database3);
     formData.append("database4", database4);
 
-    axios.post('/api/upload', formData, {
+    axios.post('http://localhost:3000/api/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -176,11 +176,11 @@ function App() {
               <TextField
                 id="date"
                 fullWidth
-                label="Data Base"
+                label="Data Base (Fomato ex: 062016)"
                 margin="normal"
                 value={database}
                 onChange={(e) => setDatabase(e.target.value)}
-                type="month"
+                type="text"
                 variant="filled"
                 InputLabelProps={{
                   shrink: true,
@@ -193,8 +193,8 @@ function App() {
                 margin="normal"
                 value={database1}
                 onChange={(e) => setDatabase1(e.target.value)}
-                label="Data Referência 1"
-                type="month"
+                label="Data Referência 1 (Fomato ex: S062016)"
+                type="text"
                 variant="filled"
                 InputLabelProps={{
                   shrink: true,
@@ -205,10 +205,10 @@ function App() {
                 id="date2"
                 fullWidth
                 margin="normal"
-                label="Data Referência 2"
+                label="Data Referência 2 (Fomato ex: S062016)"
                 value={database2}
                 onChange={(e) => setDatabase2(e.target.value)}
-                type="month"
+                type="text"
                 variant="filled"
                 InputLabelProps={{
                   shrink: true,
@@ -218,10 +218,10 @@ function App() {
                 id="date3"
                 fullWidth
                 margin="normal"
-                label="Data Referência 3"
+                label="Data Referência 3 (Fomato ex: S062016)"
                 value={database3}
                 onChange={(e) => setDatabase3(e.target.value)}
-                type="month"
+                type="text"
                 variant="filled"
                 InputLabelProps={{
                   shrink: true,
@@ -231,10 +231,10 @@ function App() {
                 id="date4"
                 fullWidth
                 margin="normal"
-                label="Data Referência 4"
+                label="Data Referência 4 (Fomato ex: S062016)"
                 value={database4}
                 onChange={(e) => setDatabase4(e.target.value)}
-                type="month"
+                type="text"
                 variant="filled"
                 InputLabelProps={{
                   shrink: true,

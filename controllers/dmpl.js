@@ -96,7 +96,7 @@ const getDMPLJSON = async (sheets) => {
             for (const x of filtered) {
                 let nextLevel = await calcLevelAndFather(referenceNivel, x.level)
                 let obj = {
-                    "@id": nextLevel.id,
+                    "@id": nextLevel.id + "",
                     "@nivel": nextLevel.nivel,
                     "@descricao": x.item.trim(),
                     "@contaPai": nextLevel.father,

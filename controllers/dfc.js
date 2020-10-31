@@ -28,7 +28,7 @@ const calcLevelAndFather = (lastnivel, level) => {
         if (!lastnivel) {
             levels[level] = [];
             id += 1;
-            levels[level].push({ nivel: "1", id, father: null })
+            levels[level].push({ nivel: "1",  id: id + "", father: null })
             referenceNivel = { nivel: "1", id, father: null };
             resolve(referenceNivel)
         } else {
@@ -37,7 +37,7 @@ const calcLevelAndFather = (lastnivel, level) => {
                 let nivel = lastnivel.nivel + ".1"
                 id += 1;
                 let father = lastnivel.id
-                levels[level].push({ nivel, id, father })
+                levels[level].push({ nivel,  id: id + "", father })
                 referenceNivel = { nivel, id, father };
                 resolve(referenceNivel)
             } else {
@@ -48,7 +48,7 @@ const calcLevelAndFather = (lastnivel, level) => {
                     let nivel = split.join(".");
                     let father = null
                     id += 1;
-                    levels[level].push({ nivel, id, father })
+                    levels[level].push({ nivel,  id: id + "", father })
                     referenceNivel = { nivel, id, father };
                     resolve(referenceNivel)
                 } else {
@@ -61,7 +61,7 @@ const calcLevelAndFather = (lastnivel, level) => {
                     let nivel1 = split1.join(".");
                     let father = lastValidLevel.father ? lastValidLevel.father : lastValidLevel.id
                     id += 1;
-                    levels[level].push({ nivel: nivel1, id, father })
+                    levels[level].push({ nivel: nivel1, id: id + "", father })
                     referenceNivel = { nivel: nivel1, id, father };
                     resolve(referenceNivel)
 
@@ -96,7 +96,7 @@ const getDFCJSON = async (sheets) => {
             for (const x of filtered) {
                 let nextLevel = await calcLevelAndFather(referenceNivel, x.level)
                 result.push({
-                    "@id": nextLevel.id,
+                    "@id": nextLevel.id + "",
                     "@nivel": nextLevel.nivel,
                     "@descricao": x.item.trim(),
                     "@contaPai": nextLevel.father,

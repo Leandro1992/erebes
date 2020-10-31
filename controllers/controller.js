@@ -80,24 +80,25 @@ exports.initControllers = (app) => {
                     }
                 ]
             });
-            BP.getBPJSON(sheets).then((data) => {
+            BP.getBPJSON(sheets).then((bp) => {
+                console.log(bp, "éooq?")
                 let header = {
                     "@cnpj": fields.cnpj,
                     "@codigoDocumento": fields.doc,
                     "@tipoRemessa": fields.remessa,
                     "@unidadeMedida": fields.unidade,
-                    "@dataBase": fields.database.split("-").reverse().join(""),
+                    "@dataBase": fields.database,
                     "datasBaseReferencia": [
                         {
                             "@id": "dt1",
-                            "@data": fields.database1.split("-").reverse().join("")
+                            "@data": fields.database1
                         },
                         {
                             "@id": "dt2",
-                            "@data": fields.database2.split("-").reverse().join("")
+                            "@data": fields.database2
                         }
                     ],
-                    "BalancoPatrimonial": data,
+                    "BalancoPatrimonial": bp,
                     "DemonstracaoDoResultado": {},
                     "DemonstracaoDoResultadoAbrangente": {},
                     "DemonstracaoDosFluxosDeCaixa": {},
@@ -106,28 +107,42 @@ exports.initControllers = (app) => {
                     "DemonstracaoDeVariacoesNasDisponibilidadesDeGruposConsolidada": {}
 
                 }
-
+                if(bp.contas.length == 0){
+                    delete header["BalancoPatrimonial"]
+                }
                 if(fields && fields.database3){
                     header['datasBaseReferencia'].push( {
                         "@id": "dt3",
-                        "@data": fields.database3.split("-").reverse().join("")
+                        "@data": fields.database3
                     })
                     if(fields.database4){
                         header['datasBaseReferencia'].push( {
                             "@id": "dt4",
-                            "@data": fields.database4.split("-").reverse().join("")
+                            "@data": fields.database4
                         })
                     }
                 }
 
                 DRE.getDREJSON(sheets).then((data) => {
                     header["DemonstracaoDoResultado"] = data;
+                    if(data.contas.length == 0){
+                        delete header["DemonstracaoDoResultado"]
+                    }
                     DFC.getDFCJSON(sheets).then((dfc) => {
                         header["DemonstracaoDosFluxosDeCaixa"] = dfc;
+                        if(dfc.contas.length == 0){
+                            delete header["DemonstracaoDosFluxosDeCaixa"]
+                        }
                         DRA.getDRAJSON(sheets).then((dra) => {
                             header["DemonstracaoDoResultadoAbrangente"] = dra;
+                            if(dra.contas.length == 0){
+                                delete header["DemonstracaoDoResultadoAbrangente"]
+                            }
                             DMPL.getDMPLJSON(sheets).then((dmpl) => {
                                 header["DemonstracaoDasMutacoesDoPatrimonioLiquido"] = dmpl;
+                                if(dmpl.contas.length == 0){
+                                    delete header["DemonstracaoDasMutacoesDoPatrimonioLiquido"]
+                                }
                                 res.send(header);
                             });
                         });
