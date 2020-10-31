@@ -78,7 +78,7 @@ function App() {
     formData.append("database3", database3);
     formData.append("database4", database4);
 
-    axios.post('/api/upload', formData, {
+    axios.post('api/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
