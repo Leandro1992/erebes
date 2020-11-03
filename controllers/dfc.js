@@ -81,7 +81,7 @@ const contas = {
 //START, RECEBE A PLANILHA E CHAMA OS SERVIÇOS PARA TRATAMENTO
 const getDFCJSON = async (sheets) => {
     return new Promise(async (resolve, reject) => {
-        if (!sheets.DFC) resolve({});
+        if (!sheets.DFC) resolve({contas: []});
         console.log("Calculando DFC...");
         let filtered = [];
         let result = [];

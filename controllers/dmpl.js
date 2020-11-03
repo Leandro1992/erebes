@@ -81,7 +81,7 @@ const contas = {
 //START, RECEBE A PLANILHA E CHAMA OS SERVIÇOS PARA TRATAMENTO
 const getDMPLJSON = async (sheets) => {
     return new Promise(async (resolve, reject) => {
-        if (!sheets.DMPL) resolve({});
+        if (!sheets.DMPL) resolve({contas: []});
         console.log("Calculando DMPL...");
         let filtered = [];
         let result = [];

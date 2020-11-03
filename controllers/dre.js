@@ -81,7 +81,7 @@ const contas = {
 //START, RECEBE A PLANILHA E CHAMA OS SERVIÇOS PARA TRATAMENTO
 const getDREJSON = async (sheets) => {
     return new Promise(async (resolve, reject) => {
-        if (!sheets.DRE) resolve({});
+        if (!sheets.DRE) resolve({contas: []});
         console.log("Calculando DRE...");
         let filtered = [];
         let result = [];
@@ -114,7 +114,6 @@ const getDREJSON = async (sheets) => {
             }
         }
         contas.contas = result
-        // console.log(contas);
         resolve(contas)
     });
 };

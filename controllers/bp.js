@@ -297,7 +297,7 @@ const getBPJSON = async (sheets) => {
                 items: []
             }
         }
-        if (sheets.BP.length) {
+        if (sheets.BP && sheets.BP.length) {
             sheets.BP.forEach(async (el, i, buff) => {
                 if (i == 0) {
                     data.ativo.data1 = el.Data1Ativo;
@@ -330,7 +330,7 @@ const getBPJSON = async (sheets) => {
                 }
             })
         }else{
-            reject({error: 'No data found!'});
+            resolve({contas: []});
         }
     })
 };

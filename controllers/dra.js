@@ -81,7 +81,7 @@ const contas = {
 //START, RECEBE A PLANILHA E CHAMA OS SERVIÇOS PARA TRATAMENTO
 const getDRAJSON = async (sheets) => {
     return new Promise(async (resolve, reject) => {
-        if (!sheets.DRA) resolve({});
+        if (!sheets.DRA) resolve({contas: []});
         console.log("Calculando DRA...");
         let filtered = [];
         let result = [];

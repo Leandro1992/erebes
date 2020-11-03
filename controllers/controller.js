@@ -101,13 +101,11 @@ exports.initControllers = (app) => {
                     "DemonstracaoDoResultado": {},
                     "DemonstracaoDoResultadoAbrangente": {},
                     "DemonstracaoDosFluxosDeCaixa": {},
-                    "DemonstracaoDasMutacoesDoPatrimonioLiquido": {},
-                    "DemonstracaoDosRecursosDeConsorcioConsolidada": {},
-                    "DemonstracaoDeVariacoesNasDisponibilidadesDeGruposConsolidada": {}
+                    "DemonstracaoDasMutacoesDoPatrimonioLiquido": {}
 
                 }
                 if(bp.contas.length == 0){
-                    delete header["BalancoPatrimonial"]
+                    header["BalancoPatrimonial"] = {}
                 }
                 if(fields && fields.database3){
                     header['datasBaseReferencia'].push( {
