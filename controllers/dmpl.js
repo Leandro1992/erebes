@@ -81,16 +81,22 @@ const contas = {
 //START, RECEBE A PLANILHA E CHAMA OS SERVIÇOS PARA TRATAMENTO
 const getDMPLJSON = async (sheets) => {
     return new Promise(async (resolve, reject) => {
-        if (!sheets.DMPL) resolve({contas: []});
+        if (!sheets.DMPL) resolve({ contas: [] });
+        id = 0;
+        referenceNivel = null;
+        levels = {}
         console.log("Calculando DMPL...");
         let filtered = [];
         let result = [];
         for (const i of sheets.DMPL) {
-            if (i.item && (i.Data1 || i.Data1 == 0) && (i.Data2 || i.Data2 == 0) && (i.Data3 || i.Data3 == 0) && (i.Data4 || i.Data4 == 0)) {
-                i.level = util.calculeInitialWhiteSpaces(i.item);
-                filtered.push(i);
+            if (i.item && (i.Data1 || i.Data1 == 0) || (i.Data2 || i.Data2 == 0) || (i.Data3 || i.Data3 == 0) || (i.Data4 || i.Data4 == 0)) {
+                if (i.item) {
+                    i.level = util.calculeInitialWhiteSpaces(i.item);
+                    filtered.push(i);
+                }
             }
         }
+
 
         if (filtered.length > 0) {
             for (const x of filtered) {
@@ -100,28 +106,31 @@ const getDMPLJSON = async (sheets) => {
                     "@nivel": nextLevel.nivel + "",
                     "@descricao": x.item.trim(),
                     "@contaPai": nextLevel.father + "",
-                    "valoresIndividualizados": [
-                        {
-                            "@dtBase": "dt1",
-                            "@valor": x.Data1
-                        },
-                        {
-                            "@dtBase": "dt2",
-                            "@valor": x.Data2
-                        }
-                    ]
+                    "valoresIndividualizados": []
                 }
-                if(x.Data3){
+                if (x.Data1) {
+                    obj["valoresIndividualizados"].push({
+                        "@dtBase": "dt1",
+                        "@valor": x.Data1
+                    })
+                }
+                if (x.Data2) {
+                    obj["valoresIndividualizados"].push({
+                        "@dtBase": "dt2",
+                        "@valor": x.Data2
+                    })
+                }
+                if (x.Data3) {
                     obj["valoresIndividualizados"].push({
                         "@dtBase": "dt3",
                         "@valor": x.Data3
                     })
-                    if(x.Data4){
-                        obj["valoresIndividualizados"].push({
-                            "@dtBase": "dt4",
-                            "@valor": x.Data4
-                        })
-                    }
+                }
+                if (x.Data4) {
+                    obj["valoresIndividualizados"].push({
+                        "@dtBase": "dt4",
+                        "@valor": x.Data4
+                    })
                 }
                 result.push(obj)
             }
