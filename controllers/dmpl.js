@@ -89,6 +89,7 @@ const getDMPLJSON = async (sheets) => {
         let filtered = [];
         let result = [];
         for (const i of sheets.DMPL) {
+            // console.log(i.item, i.Data1, i.Data2, i.Data3, i.Data4, "valores")
             if (i.item && (i.Data1 || i.Data1 == 0) || (i.Data2 || i.Data2 == 0) || (i.Data3 || i.Data3 == 0) || (i.Data4 || i.Data4 == 0)) {
                 if (i.item) {
                     i.level = util.calculeInitialWhiteSpaces(i.item);
