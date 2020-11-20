@@ -48,7 +48,7 @@ exports.initControllers = (app) => {
                         columnToKey: {
                             B: 'item',
                             C: 'Data1',
-                            E: 'Data2',
+                            D: 'Data2',
                         },
                         header: {
                             rows: 5
