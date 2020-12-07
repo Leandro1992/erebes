@@ -79,15 +79,21 @@ const contas = {
 };
 
 //START, RECEBE A PLANILHA E CHAMA OS SERVIÇOS PARA TRATAMENTO
-const getDREJSON = async (sheets) => {
+const getBPJSON = async (sheets) => {
     return new Promise(async (resolve, reject) => {
-        if (!sheets.DRE) resolve({contas: []});
-        console.log("Calculando DRE...");
+        if (!sheets.BP) resolve({contas: []});
+        console.log("Calculando BP...");
+        // C: 'Ativo',
+        // D: 'Data1Ativo',
+        // E: 'Data2Ativo',
+        // F: 'Passivo',
+        // G: 'Data1Passivo',
+        // H: 'Data2Passivo'
         let filtered = [];
         let result = [];
-        for (const i of sheets.DRE) {
-            if (i.item && (i.Data1 || i.Data1 == 0) && (i.Data2 || i.Data2 == 0)) {
-                i.level = util.calculeInitialWhiteSpaces(i.item);
+        for (const i of sheets.BP) {
+            if (i.Ativo && (i.Data1Ativo || i.Data1Ativo == 0) && (i.Data2Ativo || i.Data2Ativo == 0)) {
+                i.level = util.calculeInitialWhiteSpaces(i.Ativo);
                 filtered.push(i);
             }
         }
@@ -98,25 +104,25 @@ const getDREJSON = async (sheets) => {
                 result.push({
                     "@id": nextLevel.id + "",
                     "@nivel": nextLevel.nivel + "",
-                    "@descricao": x.item.trim(),
+                    "@descricao": x.Ativo.trim(),
                     "@contaPai": nextLevel.father + "",
                     "valoresIndividualizados": [
                         {
-                            "@dtBase": "dt4",
-                            "@valor": x.Data1
+                            "@dtBase": "bp1",
+                            "@valor": x.Data1Ativo
                         },
                         {
-                            "@dtBase": "dt2",
-                            "@valor": x.Data2
+                            "@dtBase": "bp2",
+                            "@valor": x.Data2Ativo
                         }
                     ]
                 })
             }
         }
         contas.contas = result
+        // console.log(contas);
         resolve(contas)
     });
 };
 
-exports.getDREJSON = getDREJSON;
-
+exports.getBPJSON = getBPJSON;

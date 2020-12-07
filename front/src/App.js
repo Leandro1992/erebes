@@ -41,6 +41,8 @@ function App() {
   const [database2, setDatabase2] = useState("");
   const [database3, setDatabase3] = useState("");
   const [database4, setDatabase4] = useState("");
+  const [bpdate1, setBpdate1] = useState("");
+  const [bpdate2, setBpdate2] = useState("");
   const [json, setJSON] = useState(JSON.stringify({ "Exemple": "Exemple", "Exemple2": "Exemple2" }, null, 2));
 
   const handleImageInput = event => {
@@ -77,6 +79,8 @@ function App() {
     formData.append("database2", database2);
     formData.append("database3", database3);
     formData.append("database4", database4);
+    formData.append("bpdate2", bpdate2);
+    formData.append("bpdate1", bpdate1);
 
     axios.post('api/upload', formData, {
       headers: {
@@ -234,6 +238,32 @@ function App() {
                 label="Data Referência 4 (Fomato ex: S062016)"
                 value={database4}
                 onChange={(e) => setDatabase4(e.target.value)}
+                type="text"
+                variant="filled"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              <TextField
+                id="date5"
+                fullWidth
+                margin="normal"
+                label="Data especial BP 1 (Fomato ex: S062016)"
+                value={bpdate1}
+                onChange={(e) => setBpdate1(e.target.value)}
+                type="text"
+                variant="filled"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              <TextField
+                id="date6"
+                fullWidth
+                margin="normal"
+                label="Data especial BP 2 (Fomato ex: S062016)"
+                value={bpdate2}
+                onChange={(e) => setBpdate2(e.target.value)}
                 type="text"
                 variant="filled"
                 InputLabelProps={{

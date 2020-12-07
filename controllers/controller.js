@@ -1,4 +1,4 @@
-const BP = require('./bp.js');
+const BP = require('./bpfix.js');
 const DRE = require('./dre.js');
 const DFC = require('./dfc.js');
 const DRA = require('./dra.js');
@@ -80,7 +80,7 @@ exports.initControllers = (app) => {
                     }
                 ]
             });
-            BP.getBPJSON(sheets).then((bp) => {
+            BP.getBPJSON(sheets, fields).then((bp) => {
                 let header = {
                     "@cnpj": fields.cnpj,
                     "@codigoDocumento": fields.doc,
@@ -95,6 +95,22 @@ exports.initControllers = (app) => {
                         {
                             "@id": "dt2",
                             "@data": fields.database2
+                        },
+                        {
+                            "@id": "dt3",
+                            "@data": fields.database3
+                        },
+                        {
+                            "@id": "dt4",
+                            "@data": fields.database4
+                        },
+                        {
+                            "@id": "bp1",
+                            "@data": fields.bpdate1
+                        },
+                        {
+                            "@id": "bp2",
+                            "@data": fields.bpdate1
                         }
                     ],
                     "BalancoPatrimonial": bp,
@@ -107,18 +123,18 @@ exports.initControllers = (app) => {
                 if(bp.contas.length == 0){
                     header["BalancoPatrimonial"] = {}
                 }
-                if(fields && fields.database3){
-                    header['datasBaseReferencia'].push( {
-                        "@id": "dt3",
-                        "@data": fields.database3
-                    })
-                    if(fields.database4){
-                        header['datasBaseReferencia'].push( {
-                            "@id": "dt4",
-                            "@data": fields.database4
-                        })
-                    }
-                }
+                // if(fields && fields.database3){
+                //     header['datasBaseReferencia'].push( {
+                //         "@id": "dt3",
+                //         "@data": fields.database3
+                //     })
+                //     if(fields.database4){
+                //         header['datasBaseReferencia'].push( {
+                //             "@id": "dt4",
+                //             "@data": fields.database4
+                //         })
+                //     }
+                // }
 
                 DRE.getDREJSON(sheets).then((data) => {
                     header["DemonstracaoDoResultado"] = data;

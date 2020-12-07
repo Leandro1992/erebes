@@ -8,15 +8,15 @@ const contas = {
     '1': [
         {
             "@id": "1",
-            "@nivel": "1.0",
+            "@nivel": "1",
             "@descricao": "Ativo",
             "@contaPai": ""
         }
     ],
     '2': [
         {
-            "@id": null,
-            "@nivel": "2.0",
+            "@id": "",
+            "@nivel": "2",
             "@descricao": "Passivo e patrimônio líquido",
             "@contaPai": "",
         }

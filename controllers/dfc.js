@@ -28,17 +28,17 @@ const calcLevelAndFather = (lastnivel, level) => {
         if (!lastnivel) {
             levels[level] = [];
             id += 1;
-            levels[level].push({ nivel: "1",  id: id + "", father: null })
-            referenceNivel = { nivel: "1", id, father: null };
+            levels[level].push({ nivel: "1", id, father: "", level })
+            referenceNivel = { nivel: "1", id, father: "", level };
             resolve(referenceNivel)
         } else {
-            if (!levels[level]) {
+            if (!levels[level] || (lastnivel.level != level && level > lastnivel.level)) {
                 levels[level] = []
                 let nivel = lastnivel.nivel + ".1"
                 id += 1;
                 let father = lastnivel.id
-                levels[level].push({ nivel,  id: id + "", father })
-                referenceNivel = { nivel, id, father };
+                levels[level].push({ nivel, id, father })
+                referenceNivel = { nivel, id, father, level };
                 resolve(referenceNivel)
             } else {
                 let lastLevelNivel = levels[level][levels[level].length - 1];
@@ -46,10 +46,10 @@ const calcLevelAndFather = (lastnivel, level) => {
                 if (level == 0) {
                     split[split.length - 1] = ((+split[split.length - 1]) + 1) + "";
                     let nivel = split.join(".");
-                    let father = "";
+                    let father = ""
                     id += 1;
-                    levels[level].push({ nivel,  id: id + "", father })
-                    referenceNivel = { nivel, id, father };
+                    levels[level].push({ nivel, id, father })
+                    referenceNivel = { nivel, id, father, level };
                     resolve(referenceNivel)
                 } else {
                     let lastValidLevel = await checkLevel(referenceNivel, lastLevelNivel, level)
@@ -61,8 +61,8 @@ const calcLevelAndFather = (lastnivel, level) => {
                     let nivel1 = split1.join(".");
                     let father = lastValidLevel.father ? lastValidLevel.father : lastValidLevel.id
                     id += 1;
-                    levels[level].push({ nivel: nivel1, id: id + "", father })
-                    referenceNivel = { nivel: nivel1, id, father };
+                    levels[level].push({ nivel: nivel1, id, father })
+                    referenceNivel = { nivel: nivel1, id, father, level };
                     resolve(referenceNivel)
 
                 }
@@ -102,7 +102,7 @@ const getDFCJSON = async (sheets) => {
                     "@contaPai": nextLevel.father + "",
                     "valoresIndividualizados": [
                         {
-                            "@dtBase": "dt1",
+                            "@dtBase": "dt4",
                             "@valor": x.Data1
                         },
                         {
