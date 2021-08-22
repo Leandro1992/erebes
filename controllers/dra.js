@@ -102,7 +102,7 @@ const getDRAJSON = async (sheets) => {
                     "@contaPai": nextLevel.father + "",
                     "valoresIndividualizados": [
                         {
-                            "@dtBase": "dt4",
+                            "@dtBase": "dt1",
                             "@valor": x.Data1
                         },
                         {

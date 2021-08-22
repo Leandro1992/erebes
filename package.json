@@ -1,6 +1,6 @@
 {
   "name": "erebes",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A minimal Electron + React",
   "main": "main.js",
   "scripts": {
