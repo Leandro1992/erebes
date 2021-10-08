@@ -3,10 +3,76 @@ const DRE = require('./dre.js');
 const DFC = require('./dfc.js');
 const DRA = require('./dra.js');
 const DMPL = require('./dmpl.js');
+const XML = require('./xml.js');
 const excelToJson = require('convert-excel-to-json');
 const formidable = require('formidable');
 
 exports.initControllers = (app) => {
+    app.post('/api/upload9800', (req, res, next) => {
+        const form = formidable({ multiples: true });
+        form.parse(req, (err, fields, files) => {
+            if (err) {
+                console.log(err)
+                next(err);
+                return;
+            }
+            const sheets = excelToJson({
+                sourceFile: files.sheets.path,
+                sheets: [
+                    {
+                        name: '9800',
+                        columnToKey: {
+                            A: 'BenCPF',
+                            B: 'BenCNPJ',
+                            C: 'ValorADevolver',
+                            D: 'codOrigem',
+                            E: 'InfAdicionais'
+                        },
+                        header: {
+                            rows: 1
+                        }
+                    }
+                ]
+            });
+            // console.log(sheets, "Leuuu?")
+            // console.log(fields, "Bodyyy?");
+            XML.GerarXML(sheets, fields, "9800").then((xml) => {
+                res.send({data:xml});
+            })
+        });
+    });
+
+    app.post('/api/upload9805', (req, res, next) => {
+        const form = formidable({ multiples: true });
+        form.parse(req, (err, fields, files) => {
+            if (err) {
+                console.log(err)
+                next(err);
+                return;
+            }
+            const sheets = excelToJson({
+                sourceFile: files.sheets.path,
+                sheets: [
+                    {
+                        name: '9805',
+                        columnToKey: {
+                            A: 'qtdCpfsBeneficiados',
+                            B: 'valorDevolvido',
+                            C: 'origem',
+                            D: 'modalidadePagamento',
+                        },
+                        header: {
+                            rows: 1
+                        }
+                    }
+                ]
+            });
+            XML.GerarXML(sheets, fields, "9805").then((xml) => {
+                res.send({data:xml});
+            })
+        });
+    });
+
     app.post('/api/upload', (req, res, next) => {
         const form = formidable({ multiples: true });
         form.parse(req, (err, fields, files) => {
