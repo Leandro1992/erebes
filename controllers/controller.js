@@ -16,28 +16,30 @@ exports.initControllers = (app) => {
                 next(err);
                 return;
             }
-            const sheets = excelToJson({
-                sourceFile: files.sheets.path,
-                sheets: [
-                    {
-                        name: '9800',
-                        columnToKey: {
-                            A: 'BenCPF',
-                            B: 'BenCNPJ',
-                            C: 'ValorADevolver',
-                            D: 'codOrigem',
-                            E: 'InfAdicionais'
-                        },
-                        header: {
-                            rows: 1
+            let sheets = {};
+            if (files && files.sheets && files.sheets.path) {
+                sheets = excelToJson({
+                    sourceFile: files.sheets.path,
+                    sheets: [
+                        {
+                            name: '9800',
+                            columnToKey: {
+                                A: 'BenCPF',
+                                B: 'BenCNPJ',
+                                C: 'ValorADevolver',
+                                D: 'codOrigem',
+                                E: 'InfAdicionais'
+                            },
+                            header: {
+                                rows: 1
+                            }
                         }
-                    }
-                ]
-            });
-            // console.log(sheets, "Leuuu?")
-            // console.log(fields, "Bodyyy?");
+                    ]
+                });
+            }
+
             XML.GerarXML(sheets, fields, "9800").then((xml) => {
-                res.send({data:xml});
+                res.send({ data: xml });
             })
         });
     });
@@ -50,25 +52,28 @@ exports.initControllers = (app) => {
                 next(err);
                 return;
             }
-            const sheets = excelToJson({
-                sourceFile: files.sheets.path,
-                sheets: [
-                    {
-                        name: '9805',
-                        columnToKey: {
-                            A: 'qtdCpfsBeneficiados',
-                            B: 'valorDevolvido',
-                            C: 'origem',
-                            D: 'modalidadePagamento',
-                        },
-                        header: {
-                            rows: 1
+            let sheets = {};
+            if (files && files.sheets && files.sheets.path) {
+                sheets = excelToJson({
+                    sourceFile: files.sheets.path,
+                    sheets: [
+                        {
+                            name: '9805',
+                            columnToKey: {
+                                A: 'qtdCpfsBeneficiados',
+                                B: 'valorDevolvido',
+                                C: 'origem',
+                                D: 'modalidadePagamento',
+                            },
+                            header: {
+                                rows: 1
+                            }
                         }
-                    }
-                ]
-            });
+                    ]
+                });
+            }
             XML.GerarXML(sheets, fields, "9805").then((xml) => {
-                res.send({data:xml});
+                res.send({ data: xml });
             })
         });
     });
@@ -186,7 +191,7 @@ exports.initControllers = (app) => {
                     "DemonstracaoDasMutacoesDoPatrimonioLiquido": {}
 
                 }
-                if(bp.contas.length == 0){
+                if (bp.contas.length == 0) {
                     header["BalancoPatrimonial"] = {}
                 }
                 // if(fields && fields.database3){
@@ -204,22 +209,22 @@ exports.initControllers = (app) => {
 
                 DRE.getDREJSON(sheets).then((data) => {
                     header["DemonstracaoDoResultado"] = data;
-                    if(data.contas.length == 0){
+                    if (data.contas.length == 0) {
                         header["DemonstracaoDoResultado"] = {};
                     }
                     DFC.getDFCJSON(sheets).then((dfc) => {
                         header["DemonstracaoDosFluxosDeCaixa"] = dfc;
-                        if(dfc.contas.length == 0){
+                        if (dfc.contas.length == 0) {
                             header["DemonstracaoDosFluxosDeCaixa"] = {};
                         }
                         DRA.getDRAJSON(sheets).then((dra) => {
                             header["DemonstracaoDoResultadoAbrangente"] = dra;
-                            if(dra.contas.length == 0){
+                            if (dra.contas.length == 0) {
                                 header["DemonstracaoDoResultadoAbrangente"] = {};
                             }
                             DMPL.getDMPLJSON(sheets).then((dmpl) => {
                                 header["DemonstracaoDasMutacoesDoPatrimonioLiquido"] = dmpl;
-                                if(dmpl.contas.length == 0){
+                                if (dmpl.contas.length == 0) {
                                     header["DemonstracaoDasMutacoesDoPatrimonioLiquido"] = {};
                                 }
                                 res.send(header);
