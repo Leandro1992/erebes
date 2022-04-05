@@ -122,7 +122,7 @@ exports.initControllers = (app) => {
                             D: 'Data2',
                         },
                         header: {
-                            rows: 5
+                            rows: 6
                         }
                     },
                     {
@@ -181,7 +181,7 @@ exports.initControllers = (app) => {
                         },
                         {
                             "@id": "bp2",
-                            "@data": fields.bpdate1
+                            "@data": fields.bpdate2
                         }
                     ],
                     "BalancoPatrimonial": bp,

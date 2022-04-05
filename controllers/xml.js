@@ -3,7 +3,7 @@
 const util = require('../util')
 const js2xmlparser = require("js2xmlparser");
 
-const jsonBase9800 = {
+let jsonBase9800 = {
     codDoc: "9800",
     tipoEnvio: null,
     dataBase: null,
@@ -11,7 +11,7 @@ const jsonBase9800 = {
     valor: []
 }
 
-const jsonBase9805 = {
+let jsonBase9805 = {
     codDoc: "9805",
     tipoEnvio: null,
     dataBase: null,
