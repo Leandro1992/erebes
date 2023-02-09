@@ -5,6 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import BacenJSON from './BacenJson';
 import BacenXML from './BacenXml';
+import BacenPvca from './BacenPvca';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import LogoBacen from './logo-bc.png';
@@ -18,6 +19,9 @@ const useStyles = makeStyles(theme => ({
   },
   myButton: {
     marginRight: theme.spacing(2),
+  },
+  button_pvca: {
+    backgroundColor: 'bisque'
   },
   menu: {
     height: '90vh',
@@ -46,22 +50,32 @@ function App() {
   const [home, setHome] = useState(true);
   const [json, setJson] = useState(false);
   const [xml, setXML] = useState(false);
+  const [pvca, setPvca] = useState(false);
 
   const goTo = (module) => {
     if(module === 'home'){ 
       setHome(true);
       setJson(false);
       setXML(false);
+      setPvca(false)
     }
     if(module === 'xml'){
       setHome(false);
       setJson(false);
       setXML(true);
+      setPvca(false)
     }
     if(module === 'json'){
       setHome(false);
       setJson(true);
       setXML(false);
+      setPvca(false)
+    }
+    if(module === 'pvca'){
+      setHome(false);
+      setJson(false);
+      setXML(false);
+      setPvca(true)
     }
   }
 
@@ -75,6 +89,9 @@ function App() {
           </Button>
           <Button size="large" onClick={(e) => goTo('xml')} variant="contained" color="secondary">
             Devolução XML
+          </Button>
+          <Button size="large" onClick={(e) => goTo('pvca')} variant="contained" className={classes.button_pvca}>
+            Pagamentos de Varejo e a Canais de Atendimento
           </Button>
         </div>
       )
@@ -101,6 +118,7 @@ function App() {
       {getHome()}
       {json ? <BacenJSON /> : null}
       {xml ? <BacenXML /> : null}
+      {pvca ? <BacenPvca /> : null}
     </div >
   );
 }
