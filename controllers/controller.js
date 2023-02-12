@@ -4,8 +4,11 @@ const DFC = require('./dfc.js');
 const DRA = require('./dra.js');
 const DMPL = require('./dmpl.js');
 const XML = require('./xml.js');
+const CONGLOME = require('./pvca/conglome');
+
 const excelToJson = require('convert-excel-to-json');
 const formidable = require('formidable');
+const util = require('../util/index.js');
 
 exports.initControllers = (app) => {
     app.post('/api/upload9800', (req, res, next) => {
@@ -237,5 +240,38 @@ exports.initControllers = (app) => {
                 res.send(e)
             });
         });
+    });
+
+    app.post('/api/upload/pvca', (req, res, next) => {
+        const form = formidable({ multiples: true });
+        form.parse(req, (err, fields, files) => {
+            if (err) {
+                console.log(err)
+                next(err);
+                return;
+            }
+            CONGLOME.getConglome(files, fields).then((data) => {
+                let zip =  util.zipFiles(data);
+                console.log(zip)
+                util.tempFile('BACEN.ZIP', zip).then((path) => {
+                    console.log(path)
+                    res.download(path, 'BACEN.ZIP', (err) => {
+                        if (err) {
+                            // Handle error, but keep in mind the response may be partially-sent
+                            // so check res.headersSent
+                            console.log(err, "Erro ao gerar arquivo")
+                        } else {
+                            // decrement a download credit, etc.
+                            console.log("arquivo enviado")
+                        }
+                    })  
+                }).catch((e) => {
+                    console.log("error", e)
+                })
+            }).catch((e) => {
+                console.log(e)
+                res.send(e)
+            })
+        })
     });
 }

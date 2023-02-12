@@ -29,6 +29,7 @@
     "electron-builder": "^22.7.0"
   },
   "dependencies": {
+    "adm-zip": "^0.5.10",
     "convert-excel-to-json": "git+https://github.com/Leandro1992/convert-excel-to-json.git",
     "express": "^4.17.1",
     "formidable": "^1.2.2",
