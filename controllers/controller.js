@@ -5,7 +5,12 @@ const DRA = require('./dra.js');
 const DMPL = require('./dmpl.js');
 const XML = require('./xml.js');
 const CONGLOME = require('./pvca/conglome');
-
+const USUREMOT = require('./pvca/usuremot.js');
+const ESTATCRT = require('./pvca/estatcrt.js');
+const ESTATATM = require('./pvca/estatatm.js');
+const TRANSOPA = require('./pvca/transopa.js');
+const OPEINTRA = require('./pvca/opeintra.js');
+const AdmZip = require('adm-zip');
 const excelToJson = require('convert-excel-to-json');
 const formidable = require('formidable');
 const util = require('../util/index.js');
@@ -244,16 +249,31 @@ exports.initControllers = (app) => {
 
     app.post('/api/upload/pvca', (req, res, next) => {
         const form = formidable({ multiples: true });
-        form.parse(req, (err, fields, files) => {
+        const zip = new AdmZip();
+        form.parse(req, async (err, fields, files) => {
             if (err) {
                 console.log(err)
                 next(err);
                 return;
             }
-            CONGLOME.getConglome(files, fields).then((data) => {
-                let zip =  util.zipFiles(data);
-                console.log(zip)
-                util.tempFile('BACEN.ZIP', zip).then((path) => {
+
+            try {
+                let conglome = await CONGLOME.getConglome(files, fields);
+                let usuremot = await USUREMOT.getUsuremot(files, fields);
+                let estatcrt = await ESTATCRT.getEstatcrt(files, fields);
+                let estatatm = await ESTATATM.getEstatatm(files, fields);
+                let transopa = await TRANSOPA.getTransopa(files, fields);
+                let opeintra = await OPEINTRA.getOpeintra(files, fields);
+                
+                zip.addLocalFile(conglome);
+                zip.addLocalFile(usuremot);
+                zip.addLocalFile(estatcrt);
+                zip.addLocalFile(estatatm);
+                zip.addLocalFile(transopa);
+                zip.addLocalFile(opeintra);
+
+                // zip.toBuffer();
+                util.tempFile('BACEN.ZIP', zip.toBuffer()).then((path) => {
                     console.log(path)
                     res.download(path, 'BACEN.ZIP', (err) => {
                         if (err) {
@@ -264,14 +284,14 @@ exports.initControllers = (app) => {
                             // decrement a download credit, etc.
                             console.log("arquivo enviado")
                         }
-                    })  
+                    })
                 }).catch((e) => {
                     console.log("error", e)
                 })
-            }).catch((e) => {
-                console.log(e)
-                res.send(e)
-            })
+            } catch (error) {
+                console.log(error, "deu ruim josé");
+                res.send({error})
+            }
         })
     });
 }

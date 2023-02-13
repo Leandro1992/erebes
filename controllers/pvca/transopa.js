@@ -1,5 +1,3 @@
-'use strict';
-
 const excelToJson = require('convert-excel-to-json');
 const Util = require('../../util')
 const Validators = require('../../validators/validator');
@@ -10,12 +8,15 @@ const convertSheetsToSxcel = (files) => {
             sourceFile: files.sheets.path,
             sheets: [
                 {
-                    name: 'CONGLOME',
+                    name: 'TRANSOPA',
                     columnToKey: {
                         A: 'ano',
                         B: 'trimestre',
-                        C: 'nome',
-                        D: 'ispb',
+                        C: 'canal_acesso',
+                        D: 'produto',
+                        E: 'acesso_atm',
+                        F: 'qtd_transa',
+                        G: 'valor',
                     },
                     header: {
                         rows: 1
@@ -30,14 +31,18 @@ const convertSheetsToSxcel = (files) => {
 
 const generateFile = async (header, dados) => {
     return new Promise((resolve, reject) => {
-        Util.tempFile('CONGLOME.TXT').then((path) => {
+        Util.tempFile('TRANSOPA.TXT').then((path) => {
             console.log(path)
-            dados.CONGLOME.forEach(element => {
+            dados.TRANSOPA.forEach(element => {
                 element.ano = element.ano.toString().trim();
                 element.trimestre = element.trimestre.toString().trim();
-                element.nome = Validators.calculeSpaces(element.nome, element.nome.length, 50, " ");
+                element.canal_acesso = Validators.fullFillWithZeros(element.canal_acesso ? +element.canal_acesso : 0, 2);
+                element.produto = Validators.fullFillWithZeros(element.produto ? +element.produto : 0, 2);
+                element.acesso_atm = Validators.fullFillWithZeros(element.acesso_atm ? +element.acesso_atm : 0, 2);
+                element.qtd_transa = Validators.fullFillWithZeros(element.qtd_transa ? +element.qtd_transa : 0, 12);
+                element.valor = Validators.fullFillWithZeros(element.valor ? +element.valor : 0, 15);
             });
-            Util.writeFileTxt(path, header, 'CONGLOME', Util.calculeRegisters(dados.CONGLOME.length), dados.CONGLOME);
+            Util.writeFileTxt(path, header, 'TRANSOPA', Util.calculeRegisters(dados.TRANSOPA.length), dados.TRANSOPA);
             resolve(path)
         }).catch((e) => {
             reject(e);
@@ -46,20 +51,20 @@ const generateFile = async (header, dados) => {
     });
 };
 
-const getConglome = async (sheets, header) => {
+const getTransopa = async (sheets, header) => {
     return new Promise((resolve, reject) => {
-        console.log("Calculando CONGLOME...");
+        console.log("Calculando TRANSOPA...");
         const dados = convertSheetsToSxcel(sheets);
         if (!dados) {
-            reject({ msg: "Não reconhecido na planilha a aba CONGLOME" });
+            reject({ msg: "Não reconhecido na planilha a aba TRANSOPA" });
         }
         generateFile(header, dados).then((data) => {
             resolve(data);
         }).catch((e) => {
             console.log("error", e)
-            reject({ msg: "Ocorreu um erro ao processar o arquivo" });
+            reject({ msg: "Ocorreu um erro ao processar o arquivo TRANSOPA" });
         })
     });
 }
 
-exports.getConglome = getConglome;
+exports.getTransopa = getTransopa;
