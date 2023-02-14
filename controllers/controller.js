@@ -10,6 +10,8 @@ const ESTATCRT = require('./pvca/estatcrt.js');
 const ESTATATM = require('./pvca/estatatm.js');
 const TRANSOPA = require('./pvca/transopa.js');
 const OPEINTRA = require('./pvca/opeintra.js');
+const CONTATOS = require('./pvca/contatos.js');
+const DATABASE = require('./pvca/database.js');
 const AdmZip = require('adm-zip');
 const excelToJson = require('convert-excel-to-json');
 const formidable = require('formidable');
@@ -250,6 +252,7 @@ exports.initControllers = (app) => {
     app.post('/api/upload/pvca', (req, res, next) => {
         const form = formidable({ multiples: true });
         const zip = new AdmZip();
+        let errors = [];
         form.parse(req, async (err, fields, files) => {
             if (err) {
                 console.log(err)
@@ -264,6 +267,8 @@ exports.initControllers = (app) => {
                 let estatatm = await ESTATATM.getEstatatm(files, fields);
                 let transopa = await TRANSOPA.getTransopa(files, fields);
                 let opeintra = await OPEINTRA.getOpeintra(files, fields);
+                let contatos = await CONTATOS.getContatos(files, fields);
+                let database = await DATABASE.getDatabase(files, fields);
                 
                 zip.addLocalFile(conglome);
                 zip.addLocalFile(usuremot);
@@ -271,6 +276,8 @@ exports.initControllers = (app) => {
                 zip.addLocalFile(estatatm);
                 zip.addLocalFile(transopa);
                 zip.addLocalFile(opeintra);
+                zip.addLocalFile(contatos);
+                zip.addLocalFile(database);
 
                 // zip.toBuffer();
                 util.tempFile('BACEN.ZIP', zip.toBuffer()).then((path) => {

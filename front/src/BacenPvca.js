@@ -56,7 +56,7 @@ function BacenPvca() {
         form.append("database", database);
         form.append("instituicao", instituicao);
         form.append("database1", database1);
-        form.append("database1", tipoLayout);
+        form.append("tipoLayout", tipoLayout);
 
         axios.post('/api/upload/pvca', form, {
             headers: {
