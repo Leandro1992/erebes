@@ -35,15 +35,17 @@ const generateFile = async (header, dados) => {
     return new Promise((resolve, reject) => {
         Util.tempFile('USUREMOT.TXT').then((path) => {
             console.log(path)
-            dados.USUREMOT.forEach(element => {
-                element.ano = element.ano.toString().trim();
-                element.trimestre = element.trimestre.toString().trim();
-                element.ib_pf = Validators.fullFillWithZeros(element.ib_pf ? +element.ib_pf : 0, 9);
-                element.ib_pj = Validators.fullFillWithZeros(element.ib_pj ? +element.ib_pj : 0, 9);
-                element.hb = Validators.fullFillWithZeros(element.hb ? +element.hb : 0, 9);
-                element.ob = Validators.fullFillWithZeros(element.ob ? +element.ob : 0, 9);
-                element.mobile_pf = Validators.fullFillWithZeros(element.mobile_pf ? +element.mobile_pf : 0, 9);
-                element.mobile_pj = Validators.fullFillWithZeros(element.mobile_pj ? +element.mobile_pj : 0, 9);
+            dados.USUREMOT.forEach((element, idx, arr) => {
+                arr[idx] = {
+                    ano: element.ano.toString().trim(),
+                    trimestre: element.trimestre.toString().trim(),
+                    ib_pf: Validators.fullFillWithZeros(element.ib_pf ? +element.ib_pf : 0, 9),
+                    ib_pj: Validators.fullFillWithZeros(element.ib_pj ? +element.ib_pj : 0, 9),
+                    hb: Validators.fullFillWithZeros(element.hb ? +element.hb : 0, 9),
+                    ob: Validators.fullFillWithZeros(element.ob ? +element.ob : 0, 9),
+                    mobile_pf: Validators.fullFillWithZeros(element.mobile_pf ? +element.mobile_pf : 0, 9),
+                    mobile_pj: Validators.fullFillWithZeros(element.mobile_pj ? +element.mobile_pj : 0, 9)
+                }
             });
             Util.writeFileTxt(path, header, 'USUREMOT', Util.calculeRegisters(dados.USUREMOT.length), dados.USUREMOT);
             resolve(path)

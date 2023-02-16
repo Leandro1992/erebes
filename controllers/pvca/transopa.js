@@ -33,14 +33,16 @@ const generateFile = async (header, dados) => {
     return new Promise((resolve, reject) => {
         Util.tempFile('TRANSOPA.TXT').then((path) => {
             console.log(path)
-            dados.TRANSOPA.forEach(element => {
-                element.ano = element.ano.toString().trim();
-                element.trimestre = element.trimestre.toString().trim();
-                element.canal_acesso = Validators.fullFillWithZeros(element.canal_acesso ? +element.canal_acesso : 0, 2);
-                element.produto = Validators.fullFillWithZeros(element.produto ? +element.produto : 0, 2);
-                element.acesso_atm = Validators.fullFillWithZeros(element.acesso_atm ? +element.acesso_atm : 0, 2);
-                element.qtd_transa = Validators.fullFillWithZeros(element.qtd_transa ? +element.qtd_transa : 0, 12);
-                element.valor = Validators.fullFillWithZeros(element.valor ? +element.valor : 0, 15);
+            dados.TRANSOPA.forEach((element, idx, arr) => {
+                arr[idx] = {
+                    ano : element.ano.toString().trim(),
+                    trimestre : element.trimestre.toString().trim(),
+                    canal_acesso : Validators.fullFillWithZeros(element.canal_acesso ? +element.canal_acesso : 0, 2),
+                    produto : Validators.fullFillWithZeros(element.produto ? +element.produto : 0, 2),
+                    acesso_atm : Validators.fullFillWithZeros(element.acesso_atm ? +element.acesso_atm : 0, 2),
+                    qtd_transa : Validators.fullFillWithZeros(element.qtd_transa ? +element.qtd_transa : 0, 12),
+                    valor : Validators.fullFillWithZeros(element.valor ? +element.valor : 0, 15)
+                }
             });
             Util.writeFileTxt(path, header, 'TRANSOPA', Util.calculeRegisters(dados.TRANSOPA.length), dados.TRANSOPA);
             resolve(path)

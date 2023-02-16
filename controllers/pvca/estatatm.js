@@ -33,14 +33,16 @@ const generateFile = async (header, dados) => {
     return new Promise((resolve, reject) => {
         Util.tempFile('ESTATATM.TXT').then((path) => {
             console.log(path)
-            dados.ESTATATM.forEach(element => {
-                element.ano = element.ano.toString().trim();
-                element.trimestre = element.trimestre.toString().trim();
-                element.fun_terminal = Validators.fullFillWithZeros(element.fun_terminal ? +element.fun_terminal : 0, 2);
-                element.localizacao = Validators.fullFillWithZeros(element.localizacao ? +element.localizacao : 0, 2);
-                element.tipo_compart = Validators.fullFillWithZeros(element.tipo_compart ? +element.tipo_compart : 0, 2);
-                element.uf = element.uf.trim();
-                element.qtd_atm = Validators.fullFillWithZeros(element.qtd_atm ? +element.qtd_atm : 0, 9);
+            dados.ESTATATM.forEach((element, idx, arr) => {
+                arr[idx] = {
+                    ano: element.ano.toString().trim(),
+                    trimestre: element.trimestre.toString().trim(),
+                    fun_terminal: Validators.fullFillWithZeros(element.fun_terminal ? +element.fun_terminal : 0, 2),
+                    localizacao: Validators.fullFillWithZeros(element.localizacao ? +element.localizacao : 0, 2),
+                    tipo_compart: Validators.fullFillWithZeros(element.tipo_compart ? +element.tipo_compart : 0, 2),
+                    uf: element.uf.trim(),
+                    qtd_atm: Validators.fullFillWithZeros(element.qtd_atm ? +element.qtd_atm : 0, 9)
+                }
             });
             Util.writeFileTxt(path, header, 'ESTATATM', Util.calculeRegisters(dados.ESTATATM.length), dados.ESTATATM);
             resolve(path)

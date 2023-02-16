@@ -32,10 +32,13 @@ const generateFile = async (header, dados) => {
     return new Promise((resolve, reject) => {
         Util.tempFile('CONGLOME.TXT').then((path) => {
             console.log(path)
-            dados.CONGLOME.forEach(element => {
-                element.ano = element.ano.toString().trim();
-                element.trimestre = element.trimestre.toString().trim();
-                element.nome = Validators.calculeSpaces(element.nome, element.nome.length, 50, " ");
+            dados.CONGLOME.forEach((element, idx, arr) => {
+                arr[idx] = {
+                    ano: element.ano.toString().trim(),
+                    trimestre: element.trimestre.toString().trim(),
+                    nome: Validators.calculeSpaces(element.nome, element.nome.length, 50, " "),
+                    ispb: element.ispb.toString().trim()
+                }
             });
             Util.writeFileTxt(path, header, 'CONGLOME', Util.calculeRegisters(dados.CONGLOME.length), dados.CONGLOME);
             resolve(path)

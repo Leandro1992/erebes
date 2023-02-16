@@ -32,12 +32,14 @@ const generateFile = async (header, dados) => {
     return new Promise((resolve, reject) => {
         Util.tempFile('OPEINTRA.TXT').then((path) => {
             console.log(path)
-            dados.OPEINTRA.forEach(element => {
-                element.ano = element.ano.toString().trim();
-                element.trimestre = element.trimestre.toString().trim();
-                element.operacao = Validators.fullFillWithZeros(element.operacao ? +element.operacao : 0, 2);
-                element.qtd_transa = Validators.fullFillWithZeros(element.qtd_transa ? +element.qtd_transa : 0, 12);
-                element.valor = Validators.fullFillWithZeros(element.valor ? +element.valor : 0, 15);
+            dados.OPEINTRA.forEach((element, idx, arr) => {
+                arr[idx] = {
+                    ano : element.ano.toString().trim(),
+                    trimestre : element.trimestre.toString().trim(),
+                    operacao : Validators.fullFillWithZeros(element.operacao ? +element.operacao : 0, 2),
+                    qtd_transa : Validators.fullFillWithZeros(element.qtd_transa ? +element.qtd_transa : 0, 12),
+                    valor : Validators.fullFillWithZeros(element.valor ? +element.valor : 0, 15)
+                }
             });
             Util.writeFileTxt(path, header, 'OPEINTRA', Util.calculeRegisters(dados.OPEINTRA.length), dados.OPEINTRA);
             resolve(path)

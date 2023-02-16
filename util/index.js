@@ -84,9 +84,14 @@ module.exports = {
         }
         console.log(dados, dados.length)
         if(dados.length > 0){
-            dados.forEach(element => {
+            dados.forEach((element, idx, arr) => {
                 const result = Object.values(element).join("");
-                fs.appendFileSync(path, result+ "\r\n", 'latin1');
+                if(arr.length - 1 == idx){
+                    fs.appendFileSync(path, result, 'latin1');
+                }else{
+                    fs.appendFileSync(path, result+ "\r\n", 'latin1');
+                }
+                
             });
         }
 

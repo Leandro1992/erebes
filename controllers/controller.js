@@ -252,7 +252,6 @@ exports.initControllers = (app) => {
     app.post('/api/upload/pvca', (req, res, next) => {
         const form = formidable({ multiples: true });
         const zip = new AdmZip();
-        let errors = [];
         form.parse(req, async (err, fields, files) => {
             if (err) {
                 console.log(err)
@@ -262,33 +261,31 @@ exports.initControllers = (app) => {
 
             try {
                 let conglome = await CONGLOME.getConglome(files, fields);
-                let usuremot = await USUREMOT.getUsuremot(files, fields);
-                let estatcrt = await ESTATCRT.getEstatcrt(files, fields);
-                let estatatm = await ESTATATM.getEstatatm(files, fields);
-                let transopa = await TRANSOPA.getTransopa(files, fields);
-                let opeintra = await OPEINTRA.getOpeintra(files, fields);
                 let contatos = await CONTATOS.getContatos(files, fields);
                 let database = await DATABASE.getDatabase(files, fields);
+                let estatatm = await ESTATATM.getEstatatm(files, fields);
+                let usuremot = await USUREMOT.getUsuremot(files, fields);
+                let estatcrt = await ESTATCRT.getEstatcrt(files, fields);
+                let transopa = await TRANSOPA.getTransopa(files, fields);
+                let opeintra = await OPEINTRA.getOpeintra(files, fields);
                 
+
                 zip.addLocalFile(conglome);
-                zip.addLocalFile(usuremot);
-                zip.addLocalFile(estatcrt);
                 zip.addLocalFile(estatatm);
-                zip.addLocalFile(transopa);
-                zip.addLocalFile(opeintra);
                 zip.addLocalFile(contatos);
                 zip.addLocalFile(database);
+                zip.addLocalFile(usuremot);
+                zip.addLocalFile(estatcrt);
+                zip.addLocalFile(transopa);
+                zip.addLocalFile(opeintra);
+                
 
-                // zip.toBuffer();
                 util.tempFile('BACEN.ZIP', zip.toBuffer()).then((path) => {
                     console.log(path)
                     res.download(path, 'BACEN.ZIP', (err) => {
                         if (err) {
-                            // Handle error, but keep in mind the response may be partially-sent
-                            // so check res.headersSent
                             console.log(err, "Erro ao gerar arquivo")
                         } else {
-                            // decrement a download credit, etc.
                             console.log("arquivo enviado")
                         }
                     })
@@ -296,8 +293,8 @@ exports.initControllers = (app) => {
                     console.log("error", e)
                 })
             } catch (error) {
-                console.log(error, "deu ruim josé");
-                res.send({error})
+                console.log(error);
+                res.send({ error })
             }
         })
     });
