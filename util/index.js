@@ -33,7 +33,7 @@ module.exports = {
 
                 const file_name = path.join(folder, name);
 
-                fs.writeFile(file_name, data, encoding, error_file => {
+                fs.writeFile(file_name, data, {encoding: 'latin1'}, error_file => {
                     if (error_file)
                         return reject(error_file);
 
@@ -44,7 +44,7 @@ module.exports = {
     },
 
     zipFiles(path) {
-        
+
     },
 
     calculeRegisters(qtd) {
@@ -55,6 +55,17 @@ module.exports = {
             tempString = tempString.concat("0");
         }
         return tempString.concat(value);
+    },
+
+    stringToBytes(text) {
+        const length = text.length;
+        const result = new Uint8Array(length);
+        for (let i = 0; i < length; i++) {
+            const code = text.charCodeAt(i);
+            const byte = code > 255 ? 32 : code;
+            result[i] = byte;
+        }
+        return result;
     },
 
     writeFileTxt(path, header, filename, qtdRegistersHeader, dados) {
@@ -80,18 +91,18 @@ module.exports = {
         }
 
         if (valid) {
-            fs.appendFileSync(path, filename.concat(dataPadrao, instituicao, registros) + "\r\n", 'latin1');
+            fs.appendFileSync(path, filename.concat(dataPadrao, instituicao, registros) + "\r\n", { encoding: "latin1"});
         }
         console.log(dados, dados.length)
-        if(dados.length > 0){
+        if (dados.length > 0) {
             dados.forEach((element, idx, arr) => {
                 const result = Object.values(element).join("");
-                if(arr.length - 1 == idx){
-                    fs.appendFileSync(path, result, 'latin1');
-                }else{
-                    fs.appendFileSync(path, result+ "\r\n", 'latin1');
+                if (arr.length - 1 == idx) {
+                    fs.appendFileSync(path, result, { encoding: "latin1"});
+                } else {
+                    fs.appendFileSync(path, result + "\r\n", { encoding: "latin1"});
                 }
-                
+
             });
         }
 

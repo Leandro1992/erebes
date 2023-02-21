@@ -37,7 +37,7 @@ const generateFile = async (header, dados) => {
                     ano: element.ano.toString().trim(),
                     trimestre: element.trimestre.toString().trim(),
                     nome: Validators.calculeSpaces(element.nome, element.nome.length, 50, " "),
-                    ispb: element.ispb.toString().trim()
+                    ispb: Validators.calculeSpaces(element.ispb ? element.ispb : "", element.ispb ? element.ispb.length : 0, 50, " ")
                 }
             });
             Util.writeFileTxt(path, header, 'CONGLOME', Util.calculeRegisters(dados.CONGLOME.length), dados.CONGLOME);

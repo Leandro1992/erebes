@@ -12,7 +12,7 @@ const generateFile = async (header) => {
                 headerDatabase.instituicao = header.instituicao.trim();
                 headerDatabase.database = header.database1.trim();
                 const result = Object.values(headerDatabase).join("");
-                fs.appendFileSync(path, result, 'latin1');
+                fs.appendFileSync(path, result, { encoding: "latin1"});
             } catch (error) {
                 fs.appendFileSync(path, 'Ocorreu um erro ao gerar arquivo, estão faltando informações (Data ou instituição)', 'latin1');
             }
