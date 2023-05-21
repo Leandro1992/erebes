@@ -298,4 +298,46 @@ exports.initControllers = (app) => {
             }
         })
     });
+
+    app.post('/api/upload/scd', (req, res, next) => {
+        const form = formidable({ multiples: true });
+        form.parse(req, (err, fields, files) => {
+            if (err) {
+                console.log(err)
+                next(err);
+                return;
+            }
+            let sheets = {};
+            if (files && files.sheets && files.sheets.path && fields.instituicao) {
+                sheets = excelToJson({
+                    sourceFile: files.sheets.path,
+                    sheets: [
+                        {
+                            name: `${fields.instituicao}`,
+                            columnToKey: {
+                                A: 'conta',
+                                B: 'saldo',
+                                C: 'processar',
+                            },
+                            header: {
+                                rows: 1
+                            }
+                        }
+                    ]
+                });
+                
+                if(sheets && !sheets[fields.instituicao].length){
+                    res.send({ err: "Analise se digitou o CNPJ corretamente e se a planilha em anexo contem uma aba com exatamente o mesmo número"});
+                }else{
+                    XML.GerarXML(sheets, fields, "4111").then((xml) => {
+                        console.log('xml', xml)
+                        res.send({ data: xml });
+                    })
+                }
+               
+            }else{
+                res.send({ err: "Ocorreu algum erro na geração, verifique se preencheu todos os dados corretamente." });
+            }
+        });
+    });
 }

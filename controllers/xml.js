@@ -22,6 +22,32 @@ let jsonBase9805 = {
 //START, RECEBE A PLANILHA E CHAMA OS SERVIÇOS PARA TRATAMENTO
 const GerarXML = async (sheets, fields, tipo) => {
     return new Promise(async (resolve, reject) => {
+
+        if (tipo == "4111") {
+            let finalxml = {
+                "@": {
+                    codigoDocumento: "4111",
+                    cnpj: fields.instituicao,
+                    dataBase: fields.database,
+                    tipoRemessa: fields.remessa,
+                },
+                contas: {
+                    conta:[]
+                }
+            };
+            for (const i of sheets[fields.instituicao]) {
+                if (!i.processar || i.processar != 'N') {
+                    finalxml.contas.conta.push({
+                        '@': {
+                            codigoConta: i.conta,
+                            saldoDia: i.saldo
+                        }
+                    })
+                }
+            }
+            resolve(js2xmlparser.parse("documento", finalxml, { declaration: { encoding: "UTF-8" } }));
+        }
+
         if (tipo == "9800") {
             let xmlTemp = JSON.parse(JSON.stringify(jsonBase9800));
             xmlTemp.tipoEnvio = fields.tipoEnvio;

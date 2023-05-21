@@ -3,7 +3,7 @@ const { app, BrowserWindow } = require('electron')
 const path = require('path')
 const express = require('express')
 const api = express()
-const apiPort = 3000;
+const apiPort = 3001;
 const controllers = require('./controllers/controller');
 controllers.initControllers(api);
 global.messages = [];
