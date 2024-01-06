@@ -18,6 +18,7 @@ const formidable = require('formidable');
 const util = require('../util/index.js');
 
 exports.initControllers = (app) => {
+
     app.post('/api/upload9800', (req, res, next) => {
         const form = formidable({ multiples: true });
         form.parse(req, (err, fields, files) => {
@@ -268,7 +269,7 @@ exports.initControllers = (app) => {
                 let estatcrt = await ESTATCRT.getEstatcrt(files, fields);
                 let transopa = await TRANSOPA.getTransopa(files, fields);
                 let opeintra = await OPEINTRA.getOpeintra(files, fields);
-                
+
 
                 zip.addLocalFile(conglome);
                 zip.addLocalFile(estatatm);
@@ -278,7 +279,7 @@ exports.initControllers = (app) => {
                 zip.addLocalFile(estatcrt);
                 zip.addLocalFile(transopa);
                 zip.addLocalFile(opeintra);
-                
+
 
                 util.tempFile('BACEN.ZIP', zip.toBuffer()).then((path) => {
                     console.log(path)
@@ -325,17 +326,98 @@ exports.initControllers = (app) => {
                         }
                     ]
                 });
-                
-                if(sheets && !sheets[fields.instituicao].length){
-                    res.send({ err: "Analise se digitou o CNPJ corretamente e se a planilha em anexo contem uma aba com exatamente o mesmo número"});
-                }else{
+
+                if (sheets && !sheets[fields.instituicao].length) {
+                    res.send({ err: "Analise se digitou o CNPJ corretamente e se a planilha em anexo contem uma aba com exatamente o mesmo número" });
+                } else {
                     XML.GerarXML(sheets, fields, "4111").then((xml) => {
                         console.log('xml', xml)
                         res.send({ data: xml });
                     })
                 }
-               
-            }else{
+
+            } else {
+                res.send({ err: "Ocorreu algum erro na geração, verifique se preencheu todos os dados corretamente." });
+            }
+        });
+    });
+
+    app.post('/api/upload/apix', (req, res, next) => {
+        const form = formidable({ multiples: true });
+        form.parse(req, (err, fields, files) => {
+            if (err) {
+                console.log(err)
+                next(err);
+                return;
+            }
+            let sheets = {};
+            if (files && files.sheets && files.sheets.path && fields.instituicao) {
+                sheets = excelToJson({
+                    sourceFile: files.sheets.path,
+                    sheets: [
+                        {
+                            name: "Transacoes",
+                            columnToKey: {
+                                A: 'QtdTransacoes',
+                                B: 'ValorTransacoes',
+                                C: 'ValorEspecie',
+                                D: 'DetalhamentoTransacoes',
+                                E: 'FinalidadeTransacoes',
+                            },
+                            header: {
+                                rows: 1
+                            }
+                        },
+                        {
+                            name: "Devolucoes",
+                            columnToKey: {
+                                A: 'QtdDevolucoes',
+                                B: 'ValorDevolucoes',
+                            },
+                            header: {
+                                rows: 1
+                            }
+                        },
+                        {
+                            name: "Bloqueios Cautelares",
+                            columnToKey: {
+                                A: 'QtdeBloqCaut',
+                                B: 'ValorBloqCaut',
+                                C: 'DetalhamentoTransacoesBloqCaut',
+                            },
+                            header: {
+                                rows: 1
+                            }
+                        },
+                        {
+                            name: "Receitas",
+                            columnToKey: {
+                                A: 'ValorReceita',
+                                B: 'FonteReceita',
+                            },
+                            header: {
+                                rows: 1
+                            }
+                        },
+                        {
+                            name: "Tempos Consultas",
+                            columnToKey: {
+                                A: 'Tempos',
+                                B: 'Valores',
+                            },
+                            header: {
+                                rows: 1
+                            }
+                        }
+                    ]
+                });
+                
+                XML.GerarXML(sheets, fields, "1201").then((xml) => {
+                    console.log('xml', xml)
+                    res.send({ data: xml });
+                })
+
+            } else {
                 res.send({ err: "Ocorreu algum erro na geração, verifique se preencheu todos os dados corretamente." });
             }
         });

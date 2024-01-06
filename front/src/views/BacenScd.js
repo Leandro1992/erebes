@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import './App.css';
+import '../App.css';
 import Container from '@material-ui/core/Container';
 import { Alert } from '@material-ui/lab';
 import Box from '@material-ui/core/Box';
@@ -44,19 +44,26 @@ function BacenScd() {
 
     const [database, setDatabase] = useState("");
     const [instituicao, setInstituicao] = useState("");
-    const [path, setPath] = useState({});
+    const [path, setPath] = useState(null);
     const [open, setOpen] = useState(false);
     const [openSucesso, setOpenSucesso] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const [remessa, setRemessa] = useState("");
 
     const handleSaveXml = (filename, dataXml) => {
-        console.log("chegou aqui?", filename, dataXml)
-        const dataUrl = `data:text/plain;charset=utf-8,${dataXml}`
-        const link = document.createElement('a');
+        let dataUrl = `data:application/xml;charset=utf-8,${dataXml}`
+        let link = document.createElement('a');
         link.download = `${filename}.xml`;
         link.href = dataUrl;
         link.click();
+    }
+
+    const resetForm = () => {
+        setDatabase("");
+        setInstituicao("");
+        setPath(null);
+        setOpen(false);
+        setRemessa("");
     }
 
     const handleImageInput = event => {
@@ -101,13 +108,15 @@ function BacenScd() {
                 setOpenSucesso(false);
                 if (res.data && !res.data.err) {
                     //PROCESSA DOWNLOAD
-                    handleSaveXml(instituicao, res.data.data)
+                    handleSaveXml(instituicao, res.data.data);
+                    resetForm()
                 }
                 if (res.data.err) {
                     setErrorMsg(res.data.err);
                     setOpen(true);
                 }
             }).catch(err => {
+                resetForm();
                 setOpenSucesso(false);
                 console.error(err);
                 setErrorMsg(err);

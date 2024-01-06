@@ -23,6 +23,132 @@ let jsonBase9805 = {
 const GerarXML = async (sheets, fields, tipo) => {
     return new Promise(async (resolve, reject) => {
 
+        if (tipo == "1201") {
+            let finalxml = {
+                "@": {
+                    DtArquivo: fields.database,
+                    Ano: fields.ano,
+                    Mes: fields.mes,
+                    ISPB: fields.instituicao,
+                    NomeResp: fields.nome,
+                    EmailResp: fields.email,
+                    TelResp: fields.telefone,
+                    TipoEnvio: fields.remessa,
+                },
+                Transacoes: {
+                    Transacao:[]
+                },
+                Devolucoes: {
+                    "@": {
+                        QtdDevolucoes: 0,
+                        ValorDevolucoes:0
+                    }
+                },
+                BloqueiosCautelares: {
+                    BloqueioCautelar: []
+                },
+                Receitas: {
+                    Receita :[]
+                },
+                TemposTransacoes: {
+                    "@": {
+                        Perc50TempoExpUsuarioLiqSPI: 0,
+                        Perc99TempoExpUsuarioLiqSPI:0,
+                        Perc50TempoExpUsuarioLiqForaSPI: 0,
+                        Perc99TempoExpUsuarioLiqForaSPI:0,
+                        TempoMaxBloqueioCautelar: 0
+                    }
+                },
+                TemposDict: {
+                    "@": {
+                        Perc99TempoUsuarioConsulta: 0,
+                        PercTempoEnvioRegistro:0,
+                        PercTempoExpUsuarioRegistro: 0,
+                        PercTempoExpUsuarioExclusao:0,
+                        PercTempoNotificacaoPortabilidade: 0,
+                        PercTempoEnvioPortabilidade: 0
+                    }
+                },
+                ConsultasDict: {
+                    "@": {
+                        QtdConsultas: 0,
+                    }
+                },
+                Disponibilidade: {
+                    "@": {
+                        IndiceDisponibilidade: 0,
+                    }
+                }
+                
+            };
+            for (const i of sheets.Transacoes) {
+                if (!i.processar || i.processar != 'N') {
+                    finalxml.Transacoes.Transacao.push(
+                        {
+                            QtdTransacoes: i.QtdTransacoes,
+                            ValorTransacoes: i.ValorTransacoes,
+                            ValorEspecie: i.ValorEspecie,
+                            DetalhamentoTransacoes: i.DetalhamentoTransacoes,
+                            FinalidadeTransacoes: i.FinalidadeTransacoes
+                        }
+                    )
+                }
+            }
+
+            for (const i of sheets.Devolucoes) {
+                if (!i.processar || i.processar != 'N') {
+                    finalxml.Devolucoes["@"].QtdDevolucoes = i.QtdDevolucoes
+                    finalxml.Devolucoes["@"].ValorDevolucoes = i.ValorDevolucoes
+                }
+            }
+
+            for (const i of sheets["Bloqueios Cautelares"]) {
+                if (!i.processar || i.processar != 'N') {
+                    finalxml.BloqueiosCautelares.BloqueioCautelar.push(
+                        {
+                            QtdeBloqCaut: i.QtdeBloqCaut,
+                            ValorBloqCaut: i.ValorBloqCaut,
+                            DetalhamentoTransacoesBloqCaut: i.DetalhamentoTransacoesBloqCaut,
+                        }
+                    )
+                }
+            }
+
+            for (const i of sheets.Receitas) {
+                if (!i.processar || i.processar != 'N') {
+                    finalxml.Receitas.Receita.push(
+                        {
+                            ValorReceita: i.ValorReceita,
+                            FonteReceita: i.FonteReceita,
+                        }
+                    )
+                }
+            }
+            console.log("Temmm", sheets["Tempos Consultas"])
+            // TemposTransacoes
+            finalxml.TemposTransacoes["@"].Perc50TempoExpUsuarioLiqSPI = sheets["Tempos Consultas"][0].Valores
+            finalxml.TemposTransacoes["@"].Perc99TempoExpUsuarioLiqSPI = sheets["Tempos Consultas"][1].Valores
+            finalxml.TemposTransacoes["@"].Perc50TempoExpUsuarioLiqForaSPI = sheets["Tempos Consultas"][2].Valores
+            finalxml.TemposTransacoes["@"].Perc99TempoExpUsuarioLiqForaSPI = sheets["Tempos Consultas"][3].Valores
+            finalxml.TemposTransacoes["@"].TempoMaxBloqueioCautelar = sheets["Tempos Consultas"][4].Valores
+
+            // TemposDict
+            finalxml.TemposDict["@"].Perc99TempoUsuarioConsulta = sheets["Tempos Consultas"][5].Valores
+            finalxml.TemposDict["@"].PercTempoEnvioRegistro = sheets["Tempos Consultas"][6].Valores
+            finalxml.TemposDict["@"].PercTempoExpUsuarioRegistro = sheets["Tempos Consultas"][7].Valores
+            finalxml.TemposDict["@"].PercTempoExpUsuarioExclusao = sheets["Tempos Consultas"][8].Valores
+            finalxml.TemposDict["@"].PercTempoNotificacaoPortabilidade = sheets["Tempos Consultas"][9].Valores
+            finalxml.TemposDict["@"].PercTempoEnvioPortabilidade = sheets["Tempos Consultas"][10].Valores
+
+             // ConsultasDict
+             finalxml.ConsultasDict["@"].QtdConsultas = sheets["Tempos Consultas"][11].Valores
+
+             // Disponibilidade
+             finalxml.Disponibilidade["@"].IndiceDisponibilidade = sheets["Tempos Consultas"][12].Valores
+
+            resolve(js2xmlparser.parse("APIX001", finalxml, { declaration: { encoding: "UTF-8" } }));
+        }
+       
         if (tipo == "4111") {
             let finalxml = {
                 "@": {

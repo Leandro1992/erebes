@@ -3,10 +3,11 @@ import './App.css';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import BacenJSON from './BacenJson';
-import BacenXML from './BacenXml';
-import BacenPvca from './BacenPvca';
-import BacenScd from './BacenScd';
+import BacenJSON from './views/BacenJson';
+import BacenXML from './views/BacenXml';
+import BacenPvca from './views/BacenPvca';
+import BacenScd from './views/BacenScd';
+import BacenApix from './views/BacenApix';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import LogoBacen from './logo-bc.png';
@@ -57,6 +58,7 @@ function App() {
   const [xml, setXML] = useState(false);
   const [pvca, setPvca] = useState(false);
   const [scd, setScd] = useState(false);
+  const [apix, setApix] = useState(false);
 
   const goTo = (module) => {
     if(module === 'home'){ 
@@ -65,34 +67,47 @@ function App() {
       setXML(false);
       setPvca(false)
       setScd(false)
+      setApix(false);
     }
     if(module === 'xml'){
       setHome(false);
       setJson(false);
       setXML(true);
-      setPvca(false)
-      setScd(false)
+      setPvca(false);
+      setScd(false);
+      setApix(false);
     }
     if(module === 'json'){
       setHome(false);
       setJson(true);
       setXML(false);
-      setPvca(false)
-      setScd(false)
+      setPvca(false);
+      setScd(false);
+      setApix(false);
     }
     if(module === 'pvca'){
       setHome(false);
       setJson(false);
       setXML(false);
-      setPvca(true)
-      setScd(false)
+      setPvca(true);
+      setScd(false);
+      setApix(false);
     }
     if(module === 'scd'){
       setHome(false);
       setJson(false);
       setXML(false);
-      setPvca(false)
-      setScd(true)
+      setPvca(false);
+      setScd(true);
+      setApix(false);
+    }
+    if(module === 'apix'){
+      setHome(false);
+      setJson(false);
+      setXML(false);
+      setPvca(false);
+      setScd(false);
+      setApix(true);
     }
   }
 
@@ -101,7 +116,7 @@ function App() {
     if(home){
       return (
         <div className={classes.menu}>
-          <Button size="large" onClick={(e) => goTo('json')} variant="contained" color="primary">
+          {/* <Button size="large" onClick={(e) => goTo('json')} variant="contained" color="primary">
           Demonstrações Financeiras em JSON Documento 90x1 (BP, DRE, DMPL, DRA, DFC)
           </Button>
           <Button size="large" onClick={(e) => goTo('xml')} variant="contained" color="secondary">
@@ -109,9 +124,12 @@ function App() {
           </Button>
           <Button size="large" onClick={(e) => goTo('pvca')} variant="contained" className={classes.button_pvca}>
             Pagamentos de Varejo e a Canais de Atendimento
-          </Button>
-          <Button size="large" onClick={(e) => goTo('scd')} variant="contained" className={classes.button_scd}>
+          </Button> */}
+          {/* <Button size="large" onClick={(e) => goTo('scd')} variant="contained" className={classes.button_scd}>
             Saldos Contábeis Diários - Documento 4111 (XML)
+          </Button> */}
+          <Button size="large" onClick={(e) => goTo('apix')} variant="contained" className={classes.button_scd}>
+            APIX - Documento 1201 (XML)
           </Button>
         </div>
       )
@@ -125,9 +143,9 @@ function App() {
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar>
-            <Typography variant="h6" className={classes.title}>
+            {/* <Typography variant="h6" className={classes.title}>
               BACEN Generator
-            </Typography>
+            </Typography> */}
             <Button onClick={(e) => goTo('home')} color="inherit">Página inicial</Button>
           </Toolbar>
         </AppBar>
@@ -136,10 +154,11 @@ function App() {
         {home ? <img className={classes.imagebc} alt="Bacen Logo" src={LogoBacen} /> : null}
       </div>
       {getHome()}
-      {json ? <BacenJSON /> : null}
+      {/* {json ? <BacenJSON /> : null}
       {xml ? <BacenXML /> : null}
-      {pvca ? <BacenPvca /> : null}
-      {scd ? <BacenScd /> : null}
+      {pvca ? <BacenPvca /> : null} */}
+      {/* {scd ? <BacenScd /> : null} */}
+      {apix ? <BacenApix /> : null}
     </div >
   );
 }

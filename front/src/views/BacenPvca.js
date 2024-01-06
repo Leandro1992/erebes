@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import './App.css';
+import '../App.css';
 import Container from '@material-ui/core/Container';
 import { Alert } from '@material-ui/lab';
 import Box from '@material-ui/core/Box';
@@ -87,7 +87,6 @@ function BacenPvca() {
                 responseType: 'blob'
             }).then(res => {
                 setOpenSucesso(false);
-                console.log(res, "resposta")
                 const href = URL.createObjectURL(res.data);
 
                 // create "a" HTML element with href to file & click

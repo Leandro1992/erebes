@@ -1,6 +1,6 @@
 {
-  "name": "erebes",
-  "version": "4.0.0",
+  "name": "apix",
+  "version": "1.0.0",
   "description": "A minimal Electron + React",
   "main": "main.js",
   "scripts": {
