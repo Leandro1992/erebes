@@ -29,6 +29,9 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: 'darkcyan',
     color: 'white'
   },
+  button_apix: {
+    backgroundColor: 'bisque',
+  },
   menu: {
     height: '90vh',
     alignItems: 'center',
@@ -116,7 +119,7 @@ function App() {
     if(home){
       return (
         <div className={classes.menu}>
-          {/* <Button size="large" onClick={(e) => goTo('json')} variant="contained" color="primary">
+          <Button size="large" onClick={(e) => goTo('json')} variant="contained" color="primary">
           Demonstrações Financeiras em JSON Documento 90x1 (BP, DRE, DMPL, DRA, DFC)
           </Button>
           <Button size="large" onClick={(e) => goTo('xml')} variant="contained" color="secondary">
@@ -124,11 +127,11 @@ function App() {
           </Button>
           <Button size="large" onClick={(e) => goTo('pvca')} variant="contained" className={classes.button_pvca}>
             Pagamentos de Varejo e a Canais de Atendimento
-          </Button> */}
-          {/* <Button size="large" onClick={(e) => goTo('scd')} variant="contained" className={classes.button_scd}>
+          </Button>
+          <Button size="large" onClick={(e) => goTo('scd')} variant="contained" className={classes.button_scd}>
             Saldos Contábeis Diários - Documento 4111 (XML)
-          </Button> */}
-          <Button size="large" onClick={(e) => goTo('apix')} variant="contained" className={classes.button_scd}>
+          </Button>
+          <Button size="large" onClick={(e) => goTo('apix')} variant="contained" className={classes.button_apix}>
             APIX - Documento 1201 (XML)
           </Button>
         </div>
@@ -157,7 +160,7 @@ function App() {
       {/* {json ? <BacenJSON /> : null}
       {xml ? <BacenXML /> : null}
       {pvca ? <BacenPvca /> : null} */}
-      {/* {scd ? <BacenScd /> : null} */}
+      {scd ? <BacenScd /> : null}
       {apix ? <BacenApix /> : null}
     </div >
   );

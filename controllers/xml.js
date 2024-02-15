@@ -66,7 +66,8 @@ const GerarXML = async (sheets, fields, tipo) => {
                         PercTempoExpUsuarioRegistro: 0,
                         PercTempoExpUsuarioExclusao:0,
                         PercTempoNotificacaoPortabilidade: 0,
-                        PercTempoEnvioPortabilidade: 0
+                        PercTempoEnvioPortabilidade: 0,
+                        PercTempoAberturaNotificacao: 0
                     }
                 },
                 ConsultasDict: {
@@ -139,12 +140,13 @@ const GerarXML = async (sheets, fields, tipo) => {
             finalxml.TemposDict["@"].PercTempoExpUsuarioExclusao = sheets["Tempos Consultas"][8].Valores
             finalxml.TemposDict["@"].PercTempoNotificacaoPortabilidade = sheets["Tempos Consultas"][9].Valores
             finalxml.TemposDict["@"].PercTempoEnvioPortabilidade = sheets["Tempos Consultas"][10].Valores
+            finalxml.TemposDict["@"].PercTempoAberturaNotificacao = sheets["Tempos Consultas"][11].Valores
 
              // ConsultasDict
-             finalxml.ConsultasDict["@"].QtdConsultas = sheets["Tempos Consultas"][11].Valores
+             finalxml.ConsultasDict["@"].QtdConsultas = sheets["Tempos Consultas"][12].Valores
 
              // Disponibilidade
-             finalxml.Disponibilidade["@"].IndiceDisponibilidade = sheets["Tempos Consultas"][12].Valores
+             finalxml.Disponibilidade["@"].IndiceDisponibilidade = sheets["Tempos Consultas"][13].Valores
 
             resolve(js2xmlparser.parse("APIX001", finalxml, { declaration: { encoding: "UTF-8" } }));
         }
