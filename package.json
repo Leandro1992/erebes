@@ -4,8 +4,10 @@
   "description": "A minimal Electron + React",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "dist": "electron-builder"
+    "start": "electron-forge start",
+    "dist": "electron-builder",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "repository": "https://github.com/Leandro1992/erebes.git",
   "keywords": [
@@ -25,12 +27,18 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^9.1.1",
-    "electron-builder": "^22.7.0"
+    "@electron-forge/cli": "^7.2.0",
+    "@electron-forge/maker-deb": "^7.2.0",
+    "@electron-forge/maker-rpm": "^7.2.0",
+    "@electron-forge/maker-squirrel": "^7.2.0",
+    "@electron-forge/maker-zip": "^7.2.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
+    "electron": "^9.1.1"
   },
   "dependencies": {
     "adm-zip": "^0.5.10",
     "convert-excel-to-json": "git+https://github.com/Leandro1992/convert-excel-to-json.git",
+    "electron-squirrel-startup": "^1.0.0",
     "express": "^4.17.1",
     "formidable": "^1.2.2",
     "js2xmlparser": "^4.0.1",

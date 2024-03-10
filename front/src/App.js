@@ -157,9 +157,9 @@ function App() {
         {home ? <img className={classes.imagebc} alt="Bacen Logo" src={LogoBacen} /> : null}
       </div>
       {getHome()}
-      {/* {json ? <BacenJSON /> : null}
+      {json ? <BacenJSON /> : null}
       {xml ? <BacenXML /> : null}
-      {pvca ? <BacenPvca /> : null} */}
+      {pvca ? <BacenPvca /> : null}
       {scd ? <BacenScd /> : null}
       {apix ? <BacenApix /> : null}
     </div >

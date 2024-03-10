@@ -86,7 +86,7 @@ const getDRAJSON = async (sheets) => {
         let filtered = [];
         let result = [];
         for (const i of sheets.DRA) {
-            if (i.item && (i.Data1 || i.Data1 == 0) && (i.Data2 || i.Data2 == 0)) {
+            if (i.item && (i.Data1 || i.Data1 == 0) && (i.Data2 || i.Data2 == 0) && (i.Data3 || i.Data3 == 0)) {
                 i.level = util.calculeInitialWhiteSpaces(i.item);
                 filtered.push(i);
             }
@@ -108,6 +108,10 @@ const getDRAJSON = async (sheets) => {
                         {
                             "@dtBase": "dt2",
                             "@valor": x.Data2
+                        },
+                        {
+                            "@dtBase": "dt3",
+                            "@valor": x.Data3
                         }
                     ]
                 })

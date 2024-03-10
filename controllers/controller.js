@@ -120,6 +120,7 @@ exports.initControllers = (app) => {
                             B: 'item',
                             C: 'Data1',
                             D: 'Data2',
+                            E: 'Data3',
                         },
                         header: {
                             rows: 5
@@ -131,6 +132,7 @@ exports.initControllers = (app) => {
                             B: 'item',
                             C: 'Data1',
                             D: 'Data2',
+                            E: 'Data3',
                         },
                         header: {
                             rows: 6
@@ -142,6 +144,7 @@ exports.initControllers = (app) => {
                             B: 'item',
                             C: 'Data1',
                             D: 'Data2',
+                            E: 'Data3',
                         },
                         header: {
                             rows: 5

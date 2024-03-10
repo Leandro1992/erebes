@@ -12,6 +12,8 @@ global.messages = [];
 api.listen(apiPort, () => console.log(`Server running on port ${apiPort}`))
 api.use('/', express.static(path.resolve(__dirname + '/front/build')));
 
+if (require('electron-squirrel-startup')) app.quit();
+
 function createWindow() {
   const mainWindow = new BrowserWindow({
     show: false,
@@ -32,7 +34,8 @@ function createWindow() {
 app.whenReady().then(() => {
   createWindow();
   app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    // if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    console.log("abri")
   })
 })
 
