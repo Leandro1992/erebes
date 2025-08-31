@@ -373,6 +373,7 @@ exports.initControllers = (app) => {
                             columnToKey: {
                                 A: 'QtdDevolucoes',
                                 B: 'ValorDevolucoes',
+                                C: 'DetalhamentoDevolucoes',
                             },
                             header: {
                                 rows: 1
@@ -404,6 +405,17 @@ exports.initControllers = (app) => {
                             columnToKey: {
                                 A: 'Tempos',
                                 B: 'Valores',
+                            },
+                            header: {
+                                rows: 1
+                            }
+                        },
+                        {
+                            name: "Autorizacoes",
+                            columnToKey: {
+                                A: 'QtdAutorizacoes',
+                                B: 'QtdEstoqueAutorizacoes',
+                                C: 'TipoPagador',
                             },
                             header: {
                                 rows: 1

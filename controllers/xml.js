@@ -39,10 +39,7 @@ const GerarXML = async (sheets, fields, tipo) => {
                     Transacao:[]
                 },
                 Devolucoes: {
-                    "@": {
-                        QtdDevolucoes: 0,
-                        ValorDevolucoes:0
-                    }
+                    Devolucao: []
                 },
                 BloqueiosCautelares: {
                     BloqueioCautelar: []
@@ -79,6 +76,14 @@ const GerarXML = async (sheets, fields, tipo) => {
                     "@": {
                         IndiceDisponibilidade: 0,
                     }
+                },
+                TempoAutorizacoes: {
+                    "@": {
+                        Perc95TempoAutorizacao: 0,
+                    }
+                },
+                Autorizacoes: {
+                    Autorizacao: []
                 }
                 
             };
@@ -98,8 +103,13 @@ const GerarXML = async (sheets, fields, tipo) => {
 
             for (const i of sheets.Devolucoes) {
                 if (!i.processar || i.processar != 'N') {
-                    finalxml.Devolucoes["@"].QtdDevolucoes = i.QtdDevolucoes
-                    finalxml.Devolucoes["@"].ValorDevolucoes = i.ValorDevolucoes
+                    finalxml.Devolucoes.Devolucao.push(
+                        {
+                            QtdDevolucoes: i.QtdDevolucoes,
+                            ValorDevolucoes: i.ValorDevolucoes,
+                            DetalhamentoDevolucoes: i.DetalhamentoDevolucoes || 1
+                        }
+                    )
                 }
             }
 
@@ -125,6 +135,23 @@ const GerarXML = async (sheets, fields, tipo) => {
                     )
                 }
             }
+
+            // Processar Autorizações se existir a aba
+            console.log("Autorizacoes", sheets)
+            if (sheets.Autorizacoes) {
+                for (const i of sheets.Autorizacoes) {
+                    console.log("i", i)
+                    if (!i.processar || i.processar != 'N') {
+                        finalxml.Autorizacoes.Autorizacao.push(
+                            {
+                                QtdAutorizacoes: i.QtdAutorizacoes,
+                                QtdEstoqueAutorizacoes: i.QtdEstoqueAutorizacoes,
+                                TipoPagador: i.TipoPagador
+                            }
+                        )
+                    }
+                }
+            }
             console.log("Temmm", sheets["Tempos Consultas"])
             // TemposTransacoes
             finalxml.TemposTransacoes["@"].Perc50TempoExpUsuarioLiqSPI = sheets["Tempos Consultas"][0].Valores
@@ -147,6 +174,11 @@ const GerarXML = async (sheets, fields, tipo) => {
 
              // Disponibilidade
              finalxml.Disponibilidade["@"].IndiceDisponibilidade = sheets["Tempos Consultas"][13].Valores
+
+             // TempoAutorizacoes (se existir o índice 14)
+             if (sheets["Tempos Consultas"][14]) {
+                 finalxml.TempoAutorizacoes["@"].Perc95TempoAutorizacao = sheets["Tempos Consultas"][14].Valores
+             }
 
             resolve(js2xmlparser.parse("APIX001", finalxml, { declaration: { encoding: "UTF-8" } }));
         }
