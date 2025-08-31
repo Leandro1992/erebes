@@ -98,24 +98,24 @@ const getDRAJSON = async (sheets, fields) => {
                 let nextLevel = await calcLevelAndFather(referenceNivel, x.level)
                 let valoresIndividualizados = [];
                 
-                // dt1 é obrigatória
-                if (x.Data1 || x.Data1 == 0) {
+                // dt1 é obrigatória - sempre incluir se preenchida no formulário
+                if (fields.database1 && (x.Data1 || x.Data1 == 0)) {
                     valoresIndividualizados.push({
                         "@dtBase": "dt1",
                         "@valor": x.Data1
                     });
                 }
                 
-                // dt2 é opcional
-                if (x.Data2 || x.Data2 == 0) {
+                // dt2 é opcional - só incluir se preenchida no formulário
+                if (fields.database2 && (x.Data2 || x.Data2 == 0)) {
                     valoresIndividualizados.push({
                         "@dtBase": "dt2",
                         "@valor": x.Data2
                     });
                 }
                 
-                // dt3 é opcional
-                if (x.Data3 || x.Data3 == 0) {
+                // dt3 é opcional - só incluir se preenchida no formulário
+                if (fields.database3 && (x.Data3 || x.Data3 == 0)) {
                     valoresIndividualizados.push({
                         "@dtBase": "dt3",
                         "@valor": x.Data3

@@ -92,7 +92,7 @@ const getBPJSON = async (sheets, fields) => {
         let filtered = [];
         let result = [];
         for (const i of sheets.BP) {
-            // Verificar se tem pelo menos Ativo e Data1Ativo (bp1 obrigatória)
+            // Verificar se tem pelo menos Ativo e Data1Ativo (dt1 obrigatória)
             if (i.Ativo && (i.Data1Ativo || i.Data1Ativo == 0)) {
                 i.level = util.calculeInitialWhiteSpaces(i.Ativo);
                 filtered.push(i);
@@ -104,18 +104,18 @@ const getBPJSON = async (sheets, fields) => {
                 let nextLevel = await calcLevelAndFather(referenceNivel, x.level)
                 let valoresIndividualizados = [];
                 
-                // bp1 é obrigatória
-                if (x.Data1Ativo || x.Data1Ativo == 0) {
+                // dt1 é obrigatória - sempre incluir se preenchida no formulário
+                if (fields.database1 && (x.Data1Ativo || x.Data1Ativo == 0)) {
                     valoresIndividualizados.push({
-                        "@dtBase": "bp1",
+                        "@dtBase": "dt1",
                         "@valor": x.Data1Ativo
                     });
                 }
                 
-                // bp2 é opcional
-                if (x.Data2Ativo || x.Data2Ativo == 0) {
+                // dt2 é opcional - só incluir se preenchida no formulário
+                if (fields.database2 && (x.Data2Ativo || x.Data2Ativo == 0)) {
                     valoresIndividualizados.push({
-                        "@dtBase": "bp2",
+                        "@dtBase": "dt2",
                         "@valor": x.Data2Ativo
                     });
                 }

@@ -169,18 +169,11 @@ exports.initControllers = (app) => {
             // Criar array dinâmico de datasBaseReferencia baseado nos campos preenchidos
             const datasBaseReferencia = [];
             
-            // dt1 e bp1 são obrigatórias
+            // dt1 é obrigatória
             if (fields.database1) {
                 datasBaseReferencia.push({
                     "@id": "dt1",
                     "@data": fields.database1
-                });
-            }
-            
-            if (fields.bpdate1) {
-                datasBaseReferencia.push({
-                    "@id": "bp1",
-                    "@data": fields.bpdate1
                 });
             }
             
@@ -203,13 +196,6 @@ exports.initControllers = (app) => {
                 datasBaseReferencia.push({
                     "@id": "dt4",
                     "@data": fields.database4
-                });
-            }
-            
-            if (fields.bpdate2) {
-                datasBaseReferencia.push({
-                    "@id": "bp2",
-                    "@data": fields.bpdate2
                 });
             }
 

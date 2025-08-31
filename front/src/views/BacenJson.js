@@ -40,8 +40,6 @@ function BacenJSON() {
         const [database2, setDatabase2] = useState("");
         const [database3, setDatabase3] = useState("");
         const [database4, setDatabase4] = useState("");
-        const [bpdate1, setBpdate1] = useState("");
-        const [bpdate2, setBpdate2] = useState("");
         const [json, setJSON] = useState(JSON.stringify({ "Exemple": "Exemple", "Exemple2": "Exemple2" }, null, 2));
 
         const handleImageInput = event => {
@@ -70,8 +68,6 @@ function BacenJSON() {
             formData.append("database2", database2);
             formData.append("database3", database3);
             formData.append("database4", database4);
-            formData.append("bpdate2", bpdate2);
-            formData.append("bpdate1", bpdate1);
 
             // Validações obrigatórias
             if (!path || !path.name) errors.push("Selecione uma planilha!");
@@ -80,7 +76,6 @@ function BacenJSON() {
             if (!remessa) errors.push("Preencha o tipo de remessa!");
             if (!database) errors.push("Preencha a data base!");
             if (!database1) errors.push("Data Referência 1 (dt1) é obrigatória!");
-            if (!bpdate1) errors.push("Data especial BP 1 (bp1) é obrigatória!");
 
             if (errors.length > 0) {
                 alert("Erros encontrados:\n" + errors.join("\n"));
@@ -192,7 +187,7 @@ function BacenJSON() {
                                 margin="normal"
                                 value={database1}
                                 onChange={(e) => setDatabase1(e.target.value)}
-                                label="Data Referência 1 (dt1) *OBRIGATÓRIA* (Formato ex: S062016)"
+                                label="Data Referência 1 (dt1) *OBRIGATÓRIA* - Usada para todos os demonstrativos (Formato ex: S062016)"
                                 type="text"
                                 variant="filled"
                                 InputLabelProps={{
@@ -233,32 +228,6 @@ function BacenJSON() {
                                 label="Data Referência 4 (dt4) - Opcional (Formato ex: S062016)"
                                 value={database4}
                                 onChange={(e) => setDatabase4(e.target.value)}
-                                type="text"
-                                variant="filled"
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
-                            <TextField
-                                id="date5"
-                                fullWidth
-                                margin="normal"
-                                label="Data especial BP 1 (bp1) *OBRIGATÓRIA* (Formato ex: S062016)"
-                                value={bpdate1}
-                                onChange={(e) => setBpdate1(e.target.value)}
-                                type="text"
-                                variant="filled"
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
-                            <TextField
-                                id="date6"
-                                fullWidth
-                                margin="normal"
-                                label="Data especial BP 2 (bp2) - Opcional (Formato ex: S062016)"
-                                value={bpdate2}
-                                onChange={(e) => setBpdate2(e.target.value)}
                                 type="text"
                                 variant="filled"
                                 InputLabelProps={{
