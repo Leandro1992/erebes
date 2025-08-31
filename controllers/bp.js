@@ -1,339 +1,138 @@
 'use strict';
 
 const util = require('../util')
-global.idConta = 1;
+let id = 0;
+let referenceNivel = null;
+let levels = {}
+
+
+const checkLevel = (last, lastnivel, level) => {
+    return new Promise((resolve, reject) => {
+        let splitLast = last.nivel.split(".");
+        let splitLastnivel = lastnivel.nivel.split(".");
+        let result = lastnivel;
+
+        for (let x = 0; x < level; x++) {
+            if (+(splitLast[x]) > +(splitLastnivel[x])) {
+                result = last;
+            }
+        }
+
+        resolve(result)
+    })
+}
+
+
+const calcLevelAndFather = (lastnivel, level) => {
+    return new Promise(async (resolve, reject) => {
+        if (!lastnivel) {
+            levels[level] = [];
+            id += 1;
+            levels[level].push({ nivel: "1", id, father: "", level })
+            referenceNivel = { nivel: "1", id, father: "", level };
+            resolve(referenceNivel)
+        } else {
+            if (!levels[level] || (lastnivel.level != level && level > lastnivel.level)) {
+                levels[level] = []
+                let nivel = lastnivel.nivel + ".1"
+                id += 1;
+                let father = lastnivel.id
+                levels[level].push({ nivel, id, father })
+                referenceNivel = { nivel, id, father, level };
+                resolve(referenceNivel)
+            } else {
+                let lastLevelNivel = levels[level][levels[level].length - 1];
+                let split = lastLevelNivel.nivel.split(".");
+                if (level == 0) {
+                    split[split.length - 1] = ((+split[split.length - 1]) + 1) + "";
+                    let nivel = split.join(".");
+                    let father = ""
+                    id += 1;
+                    levels[level].push({ nivel, id, father })
+                    referenceNivel = { nivel, id, father, level };
+                    resolve(referenceNivel)
+                } else {
+                    let lastValidLevel = await checkLevel(referenceNivel, lastLevelNivel, level)
+                    let split1 = lastValidLevel.nivel.split(".");
+                    if (split1.length == 1) {
+                        split1.push(".0");
+                    }
+                    split1[split1.length - 1] = ((+split1[split1.length - 1]) + 1) + "";
+                    let nivel1 = split1.join(".");
+                    let father = lastValidLevel.father ? lastValidLevel.father : lastValidLevel.id
+                    id += 1;
+                    levels[level].push({ nivel: nivel1, id, father })
+                    referenceNivel = { nivel: nivel1, id, father, level };
+                    resolve(referenceNivel)
+
+                }
+            }
+        }
+    })
+}
 
 //INICIALIZADOR ATIVO E PASSIVO
 const contas = {
-    '1': [
-        {
-            "@id": "1",
-            "@nivel": "1",
-            "@descricao": "Ativo",
-            "@contaPai": ""
-        }
+    'contas': [
+
     ],
-    '2': [
-        {
-            "@id": "",
-            "@nivel": "2",
-            "@descricao": "Passivo e patrimônio líquido",
-            "@contaPai": "",
-        }
-    ],
-};
-
-//VERIFICA E GERA OS NÍVEIS, ATÉ 4 CAMANDAS EX: 1.0.0.0.0
-const checkLastTreeLevel = async (whitespaces, type) => {
-    switch (whitespaces) {
-        case 0:
-            if (type == 1) {
-                let lastlevel = null;
-                for (let i of contas['1']) {
-                    if (i['@nivel'].split(".").length == 2) lastlevel = i;
-                }
-                return lastlevel;
-            } else {
-                if (!contas['2'][contas['2'].length - 1]['@id']) {
-                    global.idConta++;
-                    contas['2'][contas['2'].length - 1]['@id'] = global.idConta + "";
-                }
-                let lastlevel = null;
-                for (let i of contas['2']) {
-                    if (i['@nivel'].split(".").length == 2) lastlevel = i;
-                }
-                return lastlevel;
-            }
-        case 1:
-            if (type == 1) {
-                let lastlevel = null;
-                for (let i of contas['1']) {
-                    if (i['@nivel'].split(".").length == 3) {
-                        if ((+contas['1'][contas['1'].length - 1]['@nivel'][2]) > +(i['@nivel'][2])) {
-                            lastlevel = {
-                                "@id": global.idConta,
-                                "@nivel": contas['1'][contas['1'].length - 1]['@nivel'] + ".0",
-                                "@descricao": "New",
-                            };
-                        } else {
-                            lastlevel = i;
-                        }
-                    }
-                }
-                if (!lastlevel) {
-                    return {
-                        "@id": global.idConta,
-                        "@nivel": contas['1'][contas['1'].length - 1]['@nivel'] + ".0",
-                        "@descricao": "New",
-                    };
-                } else {
-                    return lastlevel;
-                }
-            } else {
-                let lastlevel = null;
-                for (let i of contas['2']) {
-                    if (i['@nivel'].split(".").length == 3) {
-                        if ((+contas['2'][contas['2'].length - 1]['@nivel'][2]) > +(i['@nivel'][2])) {
-                            lastlevel = {
-                                "@id": global.idConta,
-                                "@nivel": contas['2'][contas['2'].length - 1]['@nivel'] + ".0",
-                                "@descricao": "New",
-                            };
-                        } else {
-                            lastlevel = i;
-                        }
-                    }
-                }
-                if (!lastlevel) {
-                    return {
-                        "@id": global.idConta,
-                        "@nivel": contas['2'][contas['2'].length - 1]['@nivel'] + ".0",
-                        "@descricao": "New",
-                    };
-                } else {
-                    return lastlevel;
-                }
-            }
-        case 2:
-            if (type == 1) {
-                let lastlevel = null;
-                for (let i of contas['1']) {
-                    if (i['@nivel'].split(".").length == 4) {
-                        if ((+contas['1'][contas['1'].length - 1]['@nivel'][4]) > +(i['@nivel'][4]) || (+contas['1'][contas['1'].length - 1]['@nivel'][2]) > +(i['@nivel'][2])) {
-                            lastlevel = {
-                                "@id": global.idConta,
-                                "@nivel": contas['1'][contas['1'].length - 1]['@nivel'] + ".0",
-                                "@descricao": "New",
-                            };
-                        } else {
-                            lastlevel = i;
-                        }
-                    };
-                }
-                if (!lastlevel) {
-                    return {
-                        "@id": global.idConta,
-                        "@nivel": contas['1'][contas['1'].length - 1]['@nivel'] + ".0",
-                        "@descricao": "New",
-                    };
-                } else {
-                    return lastlevel;
-                }
-            } else {
-                let lastlevel = null;
-                for (let i of contas['2']) {
-                    if (i['@nivel'].split(".").length == 4) {
-                        if ((+contas['2'][contas['2'].length - 1]['@nivel'][4]) > +(i['@nivel'][4]) || (+contas['2'][contas['2'].length - 1]['@nivel'][2]) > +(i['@nivel'][2])) {
-                            lastlevel = {
-                                "@id": global.idConta,
-                                "@nivel": contas['2'][contas['2'].length - 1]['@nivel'] + ".0",
-                                "@descricao": "New",
-                            };
-                        } else {
-                            lastlevel = i;
-                        }
-                    };
-                }
-                if (!lastlevel) {
-                    return {
-                        "@id": global.idConta,
-                        "@nivel": contas['2'][contas['2'].length - 1]['@nivel'] + ".0",
-                        "@descricao": "New",
-                    };
-                } else {
-                    return lastlevel;
-                }
-            }
-        case 3:
-            if (type == 1) {
-                let lastlevel = null;
-                for (let i of contas['1']) {
-                    if (i['@nivel'].split(".").length == 5) {
-                        if ((+contas['1'][contas['1'].length - 1]['@nivel'][6]) > +(i['@nivel'][6]) || (+contas['1'][contas['1'].length - 1]['@nivel'][4]) > +(i['@nivel'][4]) || (+contas['1'][contas['1'].length - 1]['@nivel'][2]) > +(i['@nivel'][2])) {
-                            lastlevel = {
-                                "@id": global.idConta,
-                                "@nivel": contas['1'][contas['1'].length - 1]['@nivel'] + ".0",
-                                "@descricao": "New",
-                            };
-                        } else {
-                            lastlevel = i;
-                        }
-                    };
-                }
-                if (!lastlevel) {
-                    return {
-                        "@id": global.idConta,
-                        "@nivel": contas['1'][contas['1'].length - 1]['@nivel'] + ".0",
-                        "@descricao": "New",
-                    };
-                } else {
-                    return lastlevel;
-                }
-            } else {
-                let lastlevel = null;
-                for (let i of contas['2']) {
-                    if (i['@nivel'].split(".").length == 5) {
-                        if ((+contas['2'][contas['2'].length - 1]['@nivel'][6]) > +(i['@nivel'][6]) || (+contas['2'][contas['2'].length - 1]['@nivel'][4]) > +(i['@nivel'][4]) || (+contas['2'][contas['2'].length - 1]['@nivel'][2]) > +(i['@nivel'][2])) {
-                            lastlevel = {
-                                "@id": global.idConta,
-                                "@nivel": contas['2'][contas['2'].length - 1]['@nivel'] + ".0",
-                                "@descricao": "New",
-                            };
-                        } else {
-                            lastlevel = i;
-                        }
-                    };
-                }
-                if (!lastlevel) {
-                    return {
-                        "@id": global.idConta,
-                        "@nivel": contas['2'][contas['2'].length - 1]['@nivel'] + ".0",
-                        "@descricao": "New",
-                    };
-                } else {
-                    return lastlevel;
-                }
-            }
-        default:
-            global.messages.push("Erro na quantidade de níveis do arquivo! mais de 4 níveis")
-    }
-}
-
-//APOS VERIFICAR O PRÓXIMO NÍVEL ATUALIZA O VALOR DO NÍVEL E A REFERENCIA DE ID GLOBAL
-const calcNewLevel = async (whitespaces, type, item) => {
-
-    let checkLastTree = await checkLastTreeLevel(whitespaces, type)
-    if (checkLastTree) {
-        let nivel = checkLastTree['@nivel'];
-        global.idConta++;
-        let nextId = (global.idConta) + "";
-        let contaPai = (checkLastTree['@contaPai'] ? checkLastTree['@contaPai'] : checkLastTree['@id']) + "";
-        let split = nivel.split(".");
-        split[split.length - 1] = ((+split[split.length - 1]) + 1) + "";
-        nivel = split.join(".");
-
-        if (type == 1) {
-            contas['1'].push(
-                {
-                    "@id": nextId,
-                    "@nivel": nivel,
-                    "@descricao": item.item,
-                    "@contaPai": contaPai,
-                    "valoresIndividualizados": [
-                        {
-                            "@dtBase": "dt1",
-                            "@valor": item.valueD1
-                        },
-                        {
-                            "@dtBase": "dt2",
-                            "@valor": item.valueD2
-                        }
-                    ]
-                }
-            )
-        } else {
-            contas['2'].push(
-                {
-                    "@id": nextId,
-                    "@nivel": nivel,
-                    "@descricao": item.item,
-                    "@contaPai": contaPai,
-                    "valoresIndividualizados": [
-                        {
-                            "@dtBase": "dt1",
-                            "@valor": item.valueD1
-                        },
-                        {
-                            "@dtBase": "dt2",
-                            "@valor": item.valueD2
-                        }
-                    ]
-                }
-            )
-        }
-
-        return {
-            nivel,
-            nextId,
-            contaPai
-        };
-    } else {
-        global.messages.push("Níveis incopatíveis, verifique o espaçamento da tabela")
-    }
-}
-
-//ORGANIZA AS CHAMADAS DOS ATIVOS ANTES DOS PASSIVOS E FAZ A JUNÇÃO DOS DADOS DAS CONTAS
-const nivelGerenate = async (data) => {
-    if (data.ativo.items.length) {
-        for (let e of data.ativo.items) {
-            await calcNewLevel(e.level, 1, e)
-        }
-        if (data.passivo.items.length) {
-            for (let p of data.passivo.items) {
-                await calcNewLevel(p.level, 2, p)
-            }
-        }
-
-        let allItems = contas['1'].concat(contas['2'])
-        
-        //RESULTADO FINAL!
-        // console.log(JSON.stringify(allItems, null, 4));
-        return allItems;
-    }
 };
 
 //START, RECEBE A PLANILHA E CHAMA OS SERVIÇOS PARA TRATAMENTO
-const getBPJSON = async (sheets) => {
-    return new Promise((resolve, reject) => {
-        const data = {
-            ativo: {
-                data1: null,
-                data2: null,
-                items: []
-            },
-            passivo: {
-                data1: null,
-                data2: null,
-                items: []
+const getBPJSON = async (sheets, fields) => {
+    return new Promise(async (resolve, reject) => {
+        if (!sheets.BP) resolve({contas: []});
+        console.log("Calculando BP...");
+        // C: 'Ativo',
+        // D: 'Data1Ativo',
+        // E: 'Data2Ativo',
+        // F: 'Passivo',
+        // G: 'Data1Passivo',
+        // H: 'Data2Passivo'
+        let filtered = [];
+        let result = [];
+        for (const i of sheets.BP) {
+            // Verificar se tem pelo menos Ativo e Data1Ativo (bp1 obrigatória)
+            if (i.Ativo && (i.Data1Ativo || i.Data1Ativo == 0)) {
+                i.level = util.calculeInitialWhiteSpaces(i.Ativo);
+                filtered.push(i);
             }
         }
-        if (sheets.BP && sheets.BP.length) {
-            sheets.BP.forEach(async (el, i, buff) => {
-                if (i == 0) {
-                    data.ativo.data1 = el.Data1Ativo;
-                    data.ativo.data2 = el.Data2Ativo;
-                    data.passivo.data1 = el.Data1Passivo;
-                    data.passivo.data2 = el.Data2Passivo;
-                } else {
-                    if (el.Ativo && (el.Data1Ativo >= 0 || el.Data1Ativo) && (el.Data2Ativo >= 0 || el.Data2Ativo) && el.Ativo.indexOf("Total") == -1 && el.Ativo.indexOf("TOTAL") == -1) {
-                        data.ativo.items.push({
-                            item: el.Ativo,
-                            valueD1: el.Data1Ativo,
-                            valueD2: el.Data2Ativo,
-                            level: util.calculeInitialWhiteSpaces(el.Ativo)
-                        })
-                    }
-                    if (el.Passivo && (el.Data1Passivo >= 0 || el.Data1Passivo) && (el.Data2Passivo >= 0 || el.Data2Passivo) && el.Passivo.indexOf("Total") == -1 && el.Passivo.indexOf("TOTAL") == -1) {
-                        data.passivo.items.push({
-                            item: el.Passivo,
-                            valueD1: el.Data1Passivo,
-                            valueD2: el.Data2Passivo,
-                            level: util.calculeInitialWhiteSpaces(el.Passivo)
-                        })
-                    }
+
+        if (filtered.length > 0) {
+            for (const x of filtered) {
+                let nextLevel = await calcLevelAndFather(referenceNivel, x.level)
+                let valoresIndividualizados = [];
+                
+                // bp1 é obrigatória
+                if (x.Data1Ativo || x.Data1Ativo == 0) {
+                    valoresIndividualizados.push({
+                        "@dtBase": "bp1",
+                        "@valor": x.Data1Ativo
+                    });
                 }
-    
-                if (i == buff.length - 1) {
-                   let info = await nivelGerenate(data);
-                    let result = {'contas': info}
-                   resolve(result);
+                
+                // bp2 é opcional
+                if (x.Data2Ativo || x.Data2Ativo == 0) {
+                    valoresIndividualizados.push({
+                        "@dtBase": "bp2",
+                        "@valor": x.Data2Ativo
+                    });
                 }
-            })
-        }else{
-            resolve({contas: []});
+                
+                result.push({
+                    "@id": nextLevel.id + "",
+                    "@nivel": nextLevel.nivel + "",
+                    "@descricao": x.Ativo.trim(),
+                    "@contaPai": nextLevel.father + "",
+                    "valoresIndividualizados": valoresIndividualizados
+                })
+            }
         }
-    })
+        contas.contas = result
+        // console.log(contas);
+        resolve(contas)
+    });
 };
 
 exports.getBPJSON = getBPJSON;
-
