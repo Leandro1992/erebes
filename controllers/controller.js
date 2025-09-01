@@ -1,4 +1,4 @@
-const BP = require('./bpfix.js');
+const BP = require('./bp.js');
 const DRE = require('./dre.js');
 const DFC = require('./dfc.js');
 const DRA = require('./dra.js');
@@ -165,6 +165,40 @@ exports.initControllers = (app) => {
                     }
                 ]
             });
+
+            // Criar array dinâmico de datasBaseReferencia baseado nos campos preenchidos
+            const datasBaseReferencia = [];
+            
+            // dt1 é obrigatória
+            if (fields.database1) {
+                datasBaseReferencia.push({
+                    "@id": "dt1",
+                    "@data": fields.database1
+                });
+            }
+            
+            // Demais datas são opcionais
+            if (fields.database2) {
+                datasBaseReferencia.push({
+                    "@id": "dt2",
+                    "@data": fields.database2
+                });
+            }
+            
+            if (fields.database3) {
+                datasBaseReferencia.push({
+                    "@id": "dt3",
+                    "@data": fields.database3
+                });
+            }
+            
+            if (fields.database4) {
+                datasBaseReferencia.push({
+                    "@id": "dt4",
+                    "@data": fields.database4
+                });
+            }
+
             BP.getBPJSON(sheets, fields).then((bp) => {
                 let header = {
                     "@cnpj": fields.cnpj,
@@ -172,32 +206,7 @@ exports.initControllers = (app) => {
                     "@tipoRemessa": fields.remessa,
                     "@unidadeMedida": parseInt(fields.unidade),
                     "@dataBase": fields.database,
-                    "datasBaseReferencia": [
-                        {
-                            "@id": "dt1",
-                            "@data": fields.database1
-                        },
-                        {
-                            "@id": "dt2",
-                            "@data": fields.database2
-                        },
-                        {
-                            "@id": "dt3",
-                            "@data": fields.database3
-                        },
-                        {
-                            "@id": "dt4",
-                            "@data": fields.database4
-                        },
-                        {
-                            "@id": "bp1",
-                            "@data": fields.bpdate1
-                        },
-                        {
-                            "@id": "bp2",
-                            "@data": fields.bpdate2
-                        }
-                    ],
+                    "datasBaseReferencia": datasBaseReferencia,
                     "BalancoPatrimonial": bp,
                     "DemonstracaoDoResultado": {},
                     "DemonstracaoDoResultadoAbrangente": {},
@@ -208,35 +217,23 @@ exports.initControllers = (app) => {
                 if (bp.contas.length == 0) {
                     header["BalancoPatrimonial"] = {}
                 }
-                // if(fields && fields.database3){
-                //     header['datasBaseReferencia'].push( {
-                //         "@id": "dt3",
-                //         "@data": fields.database3
-                //     })
-                //     if(fields.database4){
-                //         header['datasBaseReferencia'].push( {
-                //             "@id": "dt4",
-                //             "@data": fields.database4
-                //         })
-                //     }
-                // }
 
-                DRE.getDREJSON(sheets).then((data) => {
+                DRE.getDREJSON(sheets, fields).then((data) => {
                     header["DemonstracaoDoResultado"] = data;
                     if (data.contas.length == 0) {
                         header["DemonstracaoDoResultado"] = {};
                     }
-                    DFC.getDFCJSON(sheets).then((dfc) => {
+                    DFC.getDFCJSON(sheets, fields).then((dfc) => {
                         header["DemonstracaoDosFluxosDeCaixa"] = dfc;
                         if (dfc.contas.length == 0) {
                             header["DemonstracaoDosFluxosDeCaixa"] = {};
                         }
-                        DRA.getDRAJSON(sheets).then((dra) => {
+                        DRA.getDRAJSON(sheets, fields).then((dra) => {
                             header["DemonstracaoDoResultadoAbrangente"] = dra;
                             if (dra.contas.length == 0) {
                                 header["DemonstracaoDoResultadoAbrangente"] = {};
                             }
-                            DMPL.getDMPLJSON(sheets).then((dmpl) => {
+                            DMPL.getDMPLJSON(sheets, fields).then((dmpl) => {
                                 header["DemonstracaoDasMutacoesDoPatrimonioLiquido"] = dmpl;
                                 if (dmpl.contas.length == 0) {
                                     header["DemonstracaoDasMutacoesDoPatrimonioLiquido"] = {};
@@ -376,6 +373,7 @@ exports.initControllers = (app) => {
                             columnToKey: {
                                 A: 'QtdDevolucoes',
                                 B: 'ValorDevolucoes',
+                                C: 'DetalhamentoDevolucoes',
                             },
                             header: {
                                 rows: 1
@@ -407,6 +405,17 @@ exports.initControllers = (app) => {
                             columnToKey: {
                                 A: 'Tempos',
                                 B: 'Valores',
+                            },
+                            header: {
+                                rows: 1
+                            }
+                        },
+                        {
+                            name: "Autorizacoes",
+                            columnToKey: {
+                                A: 'QtdAutorizacoes',
+                                B: 'QtdEstoqueAutorizacoes',
+                                C: 'TipoPagador',
                             },
                             header: {
                                 rows: 1

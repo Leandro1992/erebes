@@ -79,7 +79,7 @@ const contas = {
 };
 
 //START, RECEBE A PLANILHA E CHAMA OS SERVIÇOS PARA TRATAMENTO
-const getDMPLJSON = async (sheets) => {
+const getDMPLJSON = async (sheets, fields) => {
     return new Promise(async (resolve, reject) => {
         if (!sheets.DMPL) resolve({ contas: [] });
         id = 0;
@@ -89,51 +89,57 @@ const getDMPLJSON = async (sheets) => {
         let filtered = [];
         let result = [];
         for (const i of sheets.DMPL) {
-            // console.log(i.item, i.Data1, i.Data2, i.Data3, i.Data4, "valores")
-            if (i.item && (i.Data1 || i.Data1 == 0) || (i.Data2 || i.Data2 == 0) || (i.Data3 || i.Data3 == 0) || (i.Data4 || i.Data4 == 0)) {
-                if (i.item) {
-                    i.level = util.calculeInitialWhiteSpaces(i.item);
-                    filtered.push(i);
-                }
+            // Verificar se tem pelo menos item e Data1 (dt1 obrigatória)
+            if (i.item && (i.Data1 || i.Data1 == 0)) {
+                i.level = util.calculeInitialWhiteSpaces(i.item);
+                filtered.push(i);
             }
         }
-
 
         if (filtered.length > 0) {
             for (const x of filtered) {
                 let nextLevel = await calcLevelAndFather(referenceNivel, x.level)
-                let obj = {
+                let valoresIndividualizados = [];
+                
+                // dt1 é obrigatória - sempre incluir se preenchida no formulário
+                if (fields.database1 && (x.Data1 || x.Data1 == 0)) {
+                    valoresIndividualizados.push({
+                        "@dtBase": "dt1",
+                        "@valor": x.Data1
+                    });
+                }
+                
+                // dt2 é opcional - só incluir se preenchida no formulário
+                if (fields.database2 && (x.Data2 || x.Data2 == 0)) {
+                    valoresIndividualizados.push({
+                        "@dtBase": "dt2",
+                        "@valor": x.Data2
+                    });
+                }
+                
+                // dt3 é opcional - só incluir se preenchida no formulário
+                if (fields.database3 && (x.Data3 || x.Data3 == 0)) {
+                    valoresIndividualizados.push({
+                        "@dtBase": "dt3",
+                        "@valor": x.Data3
+                    });
+                }
+                
+                // dt4 é opcional - só incluir se preenchida no formulário
+                if (fields.database4 && (x.Data4 || x.Data4 == 0)) {
+                    valoresIndividualizados.push({
+                        "@dtBase": "dt4",
+                        "@valor": x.Data4
+                    });
+                }
+                
+                result.push({
                     "@id": nextLevel.id + "",
                     "@nivel": nextLevel.nivel + "",
                     "@descricao": x.item.trim(),
                     "@contaPai": nextLevel.father + "",
-                    "valoresIndividualizados": []
-                }
-                if (x.Data1) {
-                    obj["valoresIndividualizados"].push({
-                        "@dtBase": "dt1",
-                        "@valor": x.Data1
-                    })
-                }
-                if (x.Data2) {
-                    obj["valoresIndividualizados"].push({
-                        "@dtBase": "dt2",
-                        "@valor": x.Data2
-                    })
-                }
-                if (x.Data3) {
-                    obj["valoresIndividualizados"].push({
-                        "@dtBase": "dt3",
-                        "@valor": x.Data3
-                    })
-                }
-                if (x.Data4) {
-                    obj["valoresIndividualizados"].push({
-                        "@dtBase": "dt4",
-                        "@valor": x.Data4
-                    })
-                }
-                result.push(obj)
+                    "valoresIndividualizados": valoresIndividualizados
+                })
             }
         }
         contas.contas = result

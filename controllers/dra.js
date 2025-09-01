@@ -79,14 +79,15 @@ const contas = {
 };
 
 //START, RECEBE A PLANILHA E CHAMA OS SERVIÇOS PARA TRATAMENTO
-const getDRAJSON = async (sheets) => {
+const getDRAJSON = async (sheets, fields) => {
     return new Promise(async (resolve, reject) => {
         if (!sheets.DRA) resolve({contas: []});
         console.log("Calculando DRA...");
         let filtered = [];
         let result = [];
         for (const i of sheets.DRA) {
-            if (i.item && (i.Data1 || i.Data1 == 0) && (i.Data2 || i.Data2 == 0) && (i.Data3 || i.Data3 == 0)) {
+            // Verificar se tem pelo menos item e Data1 (dt1 obrigatória)
+            if (i.item && (i.Data1 || i.Data1 == 0)) {
                 i.level = util.calculeInitialWhiteSpaces(i.item);
                 filtered.push(i);
             }
@@ -95,25 +96,38 @@ const getDRAJSON = async (sheets) => {
         if (filtered.length > 0) {
             for (const x of filtered) {
                 let nextLevel = await calcLevelAndFather(referenceNivel, x.level)
+                let valoresIndividualizados = [];
+                
+                // dt1 é obrigatória - sempre incluir se preenchida no formulário
+                if (fields.database1 && (x.Data1 || x.Data1 == 0)) {
+                    valoresIndividualizados.push({
+                        "@dtBase": "dt1",
+                        "@valor": x.Data1
+                    });
+                }
+                
+                // dt2 é opcional - só incluir se preenchida no formulário
+                if (fields.database2 && (x.Data2 || x.Data2 == 0)) {
+                    valoresIndividualizados.push({
+                        "@dtBase": "dt2",
+                        "@valor": x.Data2
+                    });
+                }
+                
+                // dt3 é opcional - só incluir se preenchida no formulário
+                if (fields.database3 && (x.Data3 || x.Data3 == 0)) {
+                    valoresIndividualizados.push({
+                        "@dtBase": "dt3",
+                        "@valor": x.Data3
+                    });
+                }
+                
                 result.push({
                     "@id": nextLevel.id + "",
                     "@nivel": nextLevel.nivel + "",
                     "@descricao": x.item.trim(),
                     "@contaPai": nextLevel.father + "",
-                    "valoresIndividualizados": [
-                        {
-                            "@dtBase": "dt1",
-                            "@valor": x.Data1
-                        },
-                        {
-                            "@dtBase": "dt2",
-                            "@valor": x.Data2
-                        },
-                        {
-                            "@dtBase": "dt3",
-                            "@valor": x.Data3
-                        }
-                    ]
+                    "valoresIndividualizados": valoresIndividualizados
                 })
             }
         }
