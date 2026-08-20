@@ -157,8 +157,6 @@ function BacenScd() {
         if (!database) errors.push("Preencha a data de geração do arquivo!");
         if (!instituicao) errors.push("Preencha o ISPB ou CNPJ!");
         if (!remessa) errors.push("Selecione o tipo de envio!");
-        if (database.toString().length !== 10) errors.push("Data deve seguir o padrão AAAA-MM-DD.");
-        if (instituicao.toString().length > 8) errors.push("CNPJ deve seguir o padrão 00000000.");
 
         if (errors.length > 0) {
             let stringError = "Erros encontrados:\n" + errors.join("\n");

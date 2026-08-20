@@ -54,6 +54,20 @@ const useStyles = makeStyles(theme => ({
     formSection: {
         marginBottom: theme.spacing(2.5),
     },
+    formGrid: {
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: theme.spacing(1.5, 2),
+        [theme.breakpoints.down('sm')]: {
+            gridTemplateColumns: '1fr',
+        },
+    },
+    gridField: {
+        marginBottom: 0,
+    },
+    fullSpan: {
+        gridColumn: '1 / -1',
+    },
     sectionTitle: {
         fontSize: '1.1rem',
         fontWeight: 700,
@@ -142,6 +156,20 @@ const useStyles = makeStyles(theme => ({
         maxHeight: 400,
         lineHeight: 1.5,
     },
+    copyLink: {
+        alignSelf: 'flex-start',
+        color: '#0c67b6',
+        fontWeight: 700,
+        fontSize: '0.95rem',
+        textDecoration: 'underline',
+        background: 'none',
+        border: 'none',
+        padding: 0,
+        cursor: 'pointer',
+        '&:hover': {
+            color: '#134d93',
+        },
+    },
 }));
 
 
@@ -175,6 +203,29 @@ function BacenJSON() {
             link.click();
         }
 
+        const handleCopyJSON = () => {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(json)
+                    .then(() => alert("JSON copiado para a área de transferência!"))
+                    .catch(() => alert("Não foi possível copiar o JSON automaticamente."));
+                return;
+            }
+
+            const fallbackTextarea = document.createElement('textarea');
+            fallbackTextarea.value = json;
+            document.body.appendChild(fallbackTextarea);
+            fallbackTextarea.select();
+            const copied = document.execCommand('copy');
+            document.body.removeChild(fallbackTextarea);
+
+            if (copied) {
+                alert("JSON copiado para a área de transferência!");
+                return;
+            }
+
+            alert("Não foi possível copiar o JSON automaticamente.");
+        }
+
         const generateJSON = () => {
             let formData = new FormData();
             let errors = [];
@@ -199,8 +250,6 @@ function BacenJSON() {
             if (!remessa) errors.push("Preencha o tipo de remessa!");
             if (!database) errors.push("Preencha a data base!");
             if (!database1) errors.push("Data Referência 1 (dt1) é obrigatória!");
-            if (bp1 && bp1.toString().length > 6) errors.push("BP1 deve seguir o padrão (AAAAMM) ou o formato da referência de BP.");
-            if (bp2 && bp2.toString().length > 6) errors.push("BP2 deve seguir o padrão (AAAAMM) ou o formato da referência de BP.");
 
             if (errors.length > 0) {
                 alert("Erros encontrados:\n" + errors.join("\n"));
@@ -233,160 +282,166 @@ function BacenJSON() {
                                 <Alert severity="info" className={classes.alertBox}>
                                     Selecione a planilha com os dados para geração
                                 </Alert>
-                                <TextField
-                                    label="Arquivo XLSX"
-                                    placeholder="Selecione o arquivo..."
-                                    fullWidth
-                                    margin="normal"
-                                    onChange={handleImageInput}
-                                    type="file"
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    variant="outlined"
-                                    className={classes.textField}
-                                />
+                                <div className={classes.formGrid}>
+                                    <TextField
+                                        label="Arquivo XLSX"
+                                        placeholder="Selecione o arquivo..."
+                                        fullWidth
+                                        margin="normal"
+                                        onChange={handleImageInput}
+                                        type="file"
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        variant="outlined"
+                                        className={`${classes.textField} ${classes.gridField} ${classes.fullSpan}`}
+                                    />
+                                </div>
                             </div>
 
                             <div className={classes.formSection}>
                                 <h3 className={classes.sectionTitle}>Dados da Instituição</h3>
-                                <TextField
-                                    label="CNPJ"
-                                    placeholder="00.000.000/0000-00"
-                                    fullWidth
-                                    margin="normal"
-                                    onChange={(e) => setCNPJ(e.target.value)}
-                                    type="text"
-                                    value={cnpj}
-                                    variant="outlined"
-                                    className={classes.textField}
-                                />
-                                <TextField
-                                    label="Código do Documento"
-                                    placeholder="Ex: 90x1"
-                                    fullWidth
-                                    margin="normal"
-                                    onChange={(e) => setDoc(e.target.value)}
-                                    type="text"
-                                    value={doc}
-                                    variant="outlined"
-                                    className={classes.textField}
-                                />
-                                <TextField
-                                    label="Tipo de Remessa"
-                                    placeholder="Ex: E"
-                                    fullWidth
-                                    margin="normal"
-                                    onChange={(e) => setRemessa(e.target.value)}
-                                    type="text"
-                                    value={remessa}
-                                    variant="outlined"
-                                    className={classes.textField}
-                                />
-                                <TextField
-                                    label="Unidade de Medida"
-                                    placeholder="0"
-                                    fullWidth
-                                    margin="normal"
-                                    onChange={(e) => setUnindade(e.target.value)}
-                                    type="number"
-                                    value={unidade}
-                                    variant="outlined"
-                                    className={classes.textField}
-                                />
+                                <div className={classes.formGrid}>
+                                    <TextField
+                                        label="CNPJ"
+                                        placeholder="00.000.000/0000-00"
+                                        fullWidth
+                                        margin="normal"
+                                        onChange={(e) => setCNPJ(e.target.value)}
+                                        type="text"
+                                        value={cnpj}
+                                        variant="outlined"
+                                        className={`${classes.textField} ${classes.gridField}`}
+                                    />
+                                    <TextField
+                                        label="Código do Documento"
+                                        placeholder="Ex: 90x1"
+                                        fullWidth
+                                        margin="normal"
+                                        onChange={(e) => setDoc(e.target.value)}
+                                        type="text"
+                                        value={doc}
+                                        variant="outlined"
+                                        className={`${classes.textField} ${classes.gridField}`}
+                                    />
+                                    <TextField
+                                        label="Tipo de Remessa"
+                                        placeholder="Ex: E"
+                                        fullWidth
+                                        margin="normal"
+                                        onChange={(e) => setRemessa(e.target.value)}
+                                        type="text"
+                                        value={remessa}
+                                        variant="outlined"
+                                        className={`${classes.textField} ${classes.gridField}`}
+                                    />
+                                    <TextField
+                                        label="Unidade de Medida"
+                                        placeholder="0"
+                                        fullWidth
+                                        margin="normal"
+                                        onChange={(e) => setUnindade(e.target.value)}
+                                        type="number"
+                                        value={unidade}
+                                        variant="outlined"
+                                        className={`${classes.textField} ${classes.gridField}`}
+                                    />
+                                </div>
                             </div>
 
                             <div className={classes.formSection}>
                                 <h3 className={classes.sectionTitle}>Datas de Referência</h3>
-                                <TextField
-                                    label="Data Base"
-                                    placeholder="062016"
-                                    fullWidth
-                                    margin="normal"
-                                    value={database}
-                                    onChange={(e) => setDatabase(e.target.value)}
-                                    type="text"
-                                    variant="outlined"
-                                    className={classes.textField}
-                                />
+                                <div className={classes.formGrid}>
+                                    <TextField
+                                        label="Data Base"
+                                        placeholder="062016"
+                                        fullWidth
+                                        margin="normal"
+                                        value={database}
+                                        onChange={(e) => setDatabase(e.target.value)}
+                                        type="text"
+                                        variant="outlined"
+                                        className={`${classes.textField} ${classes.gridField}`}
+                                    />
 
-                                <TextField
-                                    label="Data Referência 1 (dt1) *OBRIGATÓRIA*"
-                                    placeholder="S062016"
-                                    fullWidth
-                                    margin="normal"
-                                    value={database1}
-                                    onChange={(e) => setDatabase1(e.target.value)}
-                                    type="text"
-                                    variant="outlined"
-                                    className={classes.textField}
-                                    helperText="Usada para todos os demonstrativos"
-                                />
+                                    <TextField
+                                        label="Data Referência 1 (dt1) *OBRIGATÓRIA*"
+                                        placeholder="S062016"
+                                        fullWidth
+                                        margin="normal"
+                                        value={database1}
+                                        onChange={(e) => setDatabase1(e.target.value)}
+                                        type="text"
+                                        variant="outlined"
+                                        className={`${classes.textField} ${classes.gridField}`}
+                                        helperText="Usada para todos os demonstrativos"
+                                    />
 
-                                <TextField
-                                    label="Data Referência 2 (dt2)"
-                                    placeholder="S062016"
-                                    fullWidth
-                                    margin="normal"
-                                    value={database2}
-                                    onChange={(e) => setDatabase2(e.target.value)}
-                                    type="text"
-                                    variant="outlined"
-                                    className={classes.textField}
-                                    helperText="Opcional"
-                                />
+                                    <TextField
+                                        label="Data Referência 2 (dt2)"
+                                        placeholder="S062016"
+                                        fullWidth
+                                        margin="normal"
+                                        value={database2}
+                                        onChange={(e) => setDatabase2(e.target.value)}
+                                        type="text"
+                                        variant="outlined"
+                                        className={`${classes.textField} ${classes.gridField}`}
+                                        helperText="Opcional"
+                                    />
 
-                                <TextField
-                                    label="Data Referência 3 (dt3)"
-                                    placeholder="S062016"
-                                    fullWidth
-                                    margin="normal"
-                                    value={database3}
-                                    onChange={(e) => setDatabase3(e.target.value)}
-                                    type="text"
-                                    variant="outlined"
-                                    className={classes.textField}
-                                    helperText="Opcional"
-                                />
+                                    <TextField
+                                        label="Data Referência 3 (dt3)"
+                                        placeholder="S062016"
+                                        fullWidth
+                                        margin="normal"
+                                        value={database3}
+                                        onChange={(e) => setDatabase3(e.target.value)}
+                                        type="text"
+                                        variant="outlined"
+                                        className={`${classes.textField} ${classes.gridField}`}
+                                        helperText="Opcional"
+                                    />
 
-                                <TextField
-                                    label="Data Referência 4 (dt4)"
-                                    placeholder="S062016"
-                                    fullWidth
-                                    margin="normal"
-                                    value={database4}
-                                    onChange={(e) => setDatabase4(e.target.value)}
-                                    type="text"
-                                    variant="outlined"
-                                    className={classes.textField}
-                                    helperText="Opcional"
-                                />
+                                    <TextField
+                                        label="Data Referência 4 (dt4)"
+                                        placeholder="S062016"
+                                        fullWidth
+                                        margin="normal"
+                                        value={database4}
+                                        onChange={(e) => setDatabase4(e.target.value)}
+                                        type="text"
+                                        variant="outlined"
+                                        className={`${classes.textField} ${classes.gridField}`}
+                                        helperText="Opcional"
+                                    />
 
-                                <TextField
-                                    label="Data Referência BP1 (bp1)"
-                                    placeholder="S062016"
-                                    fullWidth
-                                    margin="normal"
-                                    value={bp1}
-                                    onChange={(e) => setBp1(e.target.value)}
-                                    type="text"
-                                    variant="outlined"
-                                    className={classes.textField}
-                                    helperText="Opcional, exclusiva do Balanço Patrimonial"
-                                />
+                                    <TextField
+                                        label="Data Referência BP1 (bp1)"
+                                        placeholder="S062016"
+                                        fullWidth
+                                        margin="normal"
+                                        value={bp1}
+                                        onChange={(e) => setBp1(e.target.value)}
+                                        type="text"
+                                        variant="outlined"
+                                        className={`${classes.textField} ${classes.gridField}`}
+                                        helperText="Opcional, exclusiva do Balanço Patrimonial"
+                                    />
 
-                                <TextField
-                                    label="Data Referência BP2 (bp2)"
-                                    placeholder="S062016"
-                                    fullWidth
-                                    margin="normal"
-                                    value={bp2}
-                                    onChange={(e) => setBp2(e.target.value)}
-                                    type="text"
-                                    variant="outlined"
-                                    className={classes.textField}
-                                    helperText="Opcional, exclusiva do Balanço Patrimonial"
-                                />
+                                    <TextField
+                                        label="Data Referência BP2 (bp2)"
+                                        placeholder="S062016"
+                                        fullWidth
+                                        margin="normal"
+                                        value={bp2}
+                                        onChange={(e) => setBp2(e.target.value)}
+                                        type="text"
+                                        variant="outlined"
+                                        className={`${classes.textField} ${classes.gridField}`}
+                                        helperText="Opcional, exclusiva do Balanço Patrimonial"
+                                    />
+                                </div>
                             </div>
 
                             <div className={classes.buttonGroup}>
@@ -402,6 +457,9 @@ function BacenJSON() {
                         <Card className={classes.outputCard}>
                             <h3 className={classes.outputTitle}>Resultado JSON</h3>
                             <pre className={classes.jsonOutput}>{json}</pre>
+                            <button type="button" className={classes.copyLink} onClick={handleCopyJSON}>
+                                Copiar conteúdo JSON
+                            </button>
                         </Card>
                     </div>
                 </Container>

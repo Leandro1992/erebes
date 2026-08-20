@@ -176,11 +176,6 @@ function BacenApix() {
         if (!nomeResp) errors.push("Preencha o nome do responsável!");
         if (!emailResp) errors.push("Preencha o email!");
         if (!telResp) errors.push("Preencha o telefone!");
-        if (database.toString().length !== 10) errors.push("Data deve seguir o padrão AAAA-MM-DD.");
-        if (instituicao.toString().length > 8) errors.push("CNPJ deve seguir o padrão 00000000.");
-        if (telResp.toString().length !== 11) errors.push("Telefone deve ter 11 dígitos.");
-        if (ano.toString().length !== 4) errors.push("Ano deve ter 4 dígitos.");
-        if (mes.toString().length !== 2) errors.push("Mês deve ter 2 dígitos.");
 
         if (errors.length > 0) {
             let stringError = "Erros encontrados:\n" + errors.join("\n");
