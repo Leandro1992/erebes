@@ -168,15 +168,15 @@ exports.initControllers = (app) => {
 
             // Criar array dinâmico de datasBaseReferencia baseado nos campos preenchidos
             const datasBaseReferencia = [];
-            
-            // dt1 é obrigatória
+             
+            // dt1 é obrigatória para os demais demonstrativos
             if (fields.database1) {
                 datasBaseReferencia.push({
                     "@id": "dt1",
                     "@data": fields.database1
                 });
             }
-            
+             
             // Demais datas são opcionais
             if (fields.database2) {
                 datasBaseReferencia.push({
@@ -184,18 +184,33 @@ exports.initControllers = (app) => {
                     "@data": fields.database2
                 });
             }
-            
+             
             if (fields.database3) {
                 datasBaseReferencia.push({
                     "@id": "dt3",
                     "@data": fields.database3
                 });
             }
-            
+             
             if (fields.database4) {
                 datasBaseReferencia.push({
                     "@id": "dt4",
                     "@data": fields.database4
+                });
+            }
+
+            // Reintroduz as referências BP1/BP2 como campos opcionais exclusivos do Balanço Patrimonial
+            if (fields.bp1) {
+                datasBaseReferencia.push({
+                    "@id": "bp1",
+                    "@data": fields.bp1
+                });
+            }
+
+            if (fields.bp2) {
+                datasBaseReferencia.push({
+                    "@id": "bp2",
+                    "@data": fields.bp2
                 });
             }
 

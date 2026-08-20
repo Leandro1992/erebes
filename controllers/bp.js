@@ -89,6 +89,12 @@ const getBPJSON = async (sheets, fields) => {
         // F: 'Passivo',
         // G: 'Data1Passivo',
         // H: 'Data2Passivo'
+        const hasCustomBpReferences = !!(fields.bp1 || fields.bp2);
+        const bpReference1 = hasCustomBpReferences ? (fields.bp1 || fields.database1) : fields.database1;
+        const bpReference2 = hasCustomBpReferences ? (fields.bp2 || fields.database2) : fields.database2;
+        const bpReferenceId1 = fields.bp1 ? 'bp1' : 'dt1';
+        const bpReferenceId2 = fields.bp2 ? 'bp2' : 'dt2';
+
         let filtered = [];
         let result = [];
         for (const i of sheets.BP) {
@@ -103,23 +109,22 @@ const getBPJSON = async (sheets, fields) => {
             for (const x of filtered) {
                 let nextLevel = await calcLevelAndFather(referenceNivel, x.level)
                 let valoresIndividualizados = [];
-                
-                // dt1 é obrigatória - sempre incluir se preenchida no formulário
-                if (fields.database1 && (x.Data1Ativo || x.Data1Ativo == 0)) {
+                 
+                // Se BP1/BP2 forem preenchidos, eles são exclusivos do BP; caso contrário segue a regra padrão dt1/dt2.
+                if (bpReference1 && (x.Data1Ativo || x.Data1Ativo == 0)) {
                     valoresIndividualizados.push({
-                        "@dtBase": "dt1",
+                        "@dtBase": bpReferenceId1,
                         "@valor": x.Data1Ativo
                     });
                 }
-                
-                // dt2 é opcional - só incluir se preenchida no formulário
-                if (fields.database2 && (x.Data2Ativo || x.Data2Ativo == 0)) {
+                 
+                if (bpReference2 && (x.Data2Ativo || x.Data2Ativo == 0)) {
                     valoresIndividualizados.push({
-                        "@dtBase": "dt2",
+                        "@dtBase": bpReferenceId2,
                         "@valor": x.Data2Ativo
                     });
                 }
-                
+                 
                 result.push({
                     "@id": nextLevel.id + "",
                     "@nivel": nextLevel.nivel + "",

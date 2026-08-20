@@ -40,6 +40,8 @@ function BacenJSON() {
         const [database2, setDatabase2] = useState("");
         const [database3, setDatabase3] = useState("");
         const [database4, setDatabase4] = useState("");
+        const [bp1, setBp1] = useState("");
+        const [bp2, setBp2] = useState("");
         const [json, setJSON] = useState(JSON.stringify({ "Exemple": "Exemple", "Exemple2": "Exemple2" }, null, 2));
 
         const handleImageInput = event => {
@@ -68,6 +70,8 @@ function BacenJSON() {
             formData.append("database2", database2);
             formData.append("database3", database3);
             formData.append("database4", database4);
+            formData.append("bp1", bp1);
+            formData.append("bp2", bp2);
 
             // Validações obrigatórias
             if (!path || !path.name) errors.push("Selecione uma planilha!");
@@ -76,6 +80,8 @@ function BacenJSON() {
             if (!remessa) errors.push("Preencha o tipo de remessa!");
             if (!database) errors.push("Preencha a data base!");
             if (!database1) errors.push("Data Referência 1 (dt1) é obrigatória!");
+            if (bp1 && bp1.toString().length > 6) errors.push("BP1 deve seguir o padrão (AAAAMM) ou o formato da referência de BP.");
+            if (bp2 && bp2.toString().length > 6) errors.push("BP2 deve seguir o padrão (AAAAMM) ou o formato da referência de BP.");
 
             if (errors.length > 0) {
                 alert("Erros encontrados:\n" + errors.join("\n"));
@@ -228,6 +234,32 @@ function BacenJSON() {
                                 label="Data Referência 4 (dt4) - Opcional (Formato ex: S062016)"
                                 value={database4}
                                 onChange={(e) => setDatabase4(e.target.value)}
+                                type="text"
+                                variant="filled"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                            <TextField
+                                id="bp1"
+                                fullWidth
+                                margin="normal"
+                                label="Data Referência BP1 (bp1) - Opcional, exclusiva do Balanço Patrimonial"
+                                value={bp1}
+                                onChange={(e) => setBp1(e.target.value)}
+                                type="text"
+                                variant="filled"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                            <TextField
+                                id="bp2"
+                                fullWidth
+                                margin="normal"
+                                label="Data Referência BP2 (bp2) - Opcional, exclusiva do Balanço Patrimonial"
+                                value={bp2}
+                                onChange={(e) => setBp2(e.target.value)}
                                 type="text"
                                 variant="filled"
                                 InputLabelProps={{

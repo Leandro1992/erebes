@@ -62,9 +62,14 @@ Esta refatoração modifica o comportamento da aplicação para tornar apenas a 
 - **dt3** (database3): Data Referência 3 - Usada por DRE, DFC, DRA, DMPL
 - **dt4** (database4): Data Referência 4 - Usada apenas por DMPL
 
-### Campos Removidos
-- **bp1** (bpdate1): Data especial BP 1 - Removida, agora usa dt1
-- **bp2** (bpdate2): Data especial BP 2 - Removida, agora usa dt2
+### Campos opcionais do Balanço Patrimonial
+- **bp1** (bpdate1): Data especial BP 1 - Opcional e usada exclusivamente no Balanço Patrimonial quando preenchida
+- **bp2** (bpdate2): Data especial BP 2 - Opcional e usada exclusivamente no Balanço Patrimonial quando preenchida
+
+### Regra de precedência
+- Se `bp1` ou `bp2` forem preenchidos, o Balanço Patrimonial usa esses valores como referências exclusivas do demonstrativo.
+- Se não forem preenchidos, o comportamento continua sendo o padrão atual: `dt1` e `dt2`.
+- Os demais demonstrativos continuam usando `dt1`, `dt2`, `dt3` e `dt4` normalmente.
 
 ## Correção Importante: valoresIndividualizados
 

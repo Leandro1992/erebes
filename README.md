@@ -1,49 +1,76 @@
-# Electron React Electron-Build Express Server
+# Erebes
 
-# This project is based on electron-quick-start (https://github.com/electron/electron-quick-start)
+Aplicativo desktop para geração de arquivos padronizados do Banco Central do Brasil, com foco em demonstrações financeiras e relatórios de varejo e atendimento, em formatos JSON, XML e TXT.
 
-**Clone and run for a quick way to see Electron in action.**
+## Visão geral
 
-This is a minimal Electron application based on the [Quick Start Guide](https://electronjs.org/docs/tutorial/quick-start) within the Electron documentation.
+O projeto combina:
 
-**Use this app along with the [Electron API Demos](https://electronjs.org/#get-started) app for API code examples to help you get started.**
+- Electron + React para a interface desktop
+- Express para expor rotas backend locais
+- Node.js para processamento e geração de arquivos
+- Conversão de planilhas Excel em objetos JavaScript e em estruturas padronizadas
+- Geração de arquivos para envio ao Bacen em diferentes formatos e layouts
 
-A basic Electron application needs just these files:
+A aplicação é usada principalmente para transformar dados de planilhas em arquivos finais que podem ser enviados em conformidade com os documentos exigidos pelo Bacen.
 
-- `package.json` - Points to the app's main file and lists its details and dependencies.
-- `main.js` - Starts the app and creates a browser window to render HTML. This is the app's **main process**.
+## Funcionalidades principais
 
-You can learn more about each of these components within the [Quick Start Guide](https://electronjs.org/docs/tutorial/quick-start).
+- Geração de JSON para demonstrações financeiras (BP, DRE, DFC, DRA, DMPL)
+- Geração de XML para documentos ASVR 9800 e 9805
+- Geração de XML para Saldos Contábeis Diários (4111)
+- Geração de XML para APIX 1201
+- Geração de pacote ZIP com arquivos PVCA (Pagamentos de Varejo e Canais de Atendimento)
+- Processamento de planilhas em Excel e exportação final em formatos exigidos
 
-## To Use
+## Stack
 
-To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
+- Node.js
+- Electron 9
+- React + Material UI
+- Express 4
+- js2xmlparser
+- convert-excel-to-json
+- formidable
+- adm-zip
+
+## Estrutura do repositório
+
+- `main.js` — processo principal do Electron
+- `server.js` — servidor Express auxiliar/duplicado
+- `controllers/` — regras de geração dos arquivos
+- `util/` — helpers para arquivos temporários, padding e escrita em TXT
+- `validators/` — utilitários de validação e preenchimento de campos
+- `front/` — interface em React
+- `docs/` — documentação técnica do projeto
+
+## Como executar
 
 ```bash
-# Clone this repository
-git clone https://github.com/Leandro1992/erebes.git
-# Go into the repository
-cd erebes
-# Install dependencies
 npm install
-# Run the app
 npm start
-# build app
+```
+
+Para empacotar a aplicação:
+
+```bash
 npm run dist
 ```
 
+## Documentação
 
-Note: If you're using Linux Bash for Windows, [see this guide](https://www.howtogeek.com/261575/how-to-run-graphical-linux-desktop-applications-from-windows-10s-bash-shell/) or use `node` from the command prompt.
+- [Documentação técnica](/docs/DocumentacaoTecnica.md)
+- [Contexto para agente de desenvolvimento](AGENT.md)
 
-## Resources for Learning Electron
+## Observações importantes
 
-- [electronjs.org/docs](https://electronjs.org/docs) - all of Electron's documentation
-- [electronjs.org/community#boilerplates](https://electronjs.org/community#boilerplates) - sample starter apps created by the community
-- [electron/electron-quick-start](https://github.com/electron/electron-quick-start) - a very basic starter Electron app
-- [electron/simple-samples](https://github.com/electron/simple-samples) - small applications with ideas for taking them further
-- [electron/electron-api-demos](https://github.com/electron/electron-api-demos) - an Electron app that teaches you how to use Electron
-- [hokein/electron-sample-apps](https://github.com/hokein/electron-sample-apps) - small demo apps for the various Electron APIs
+Este é um projeto legado, com lógica muito orientada a regras fixas do Bacen, geração de arquivos textuais e conversão de planilhas. A manutenção deve considerar que há forte acoplamento entre:
 
-## License
+- estrutura da planilha
+- campos de formulário
+- regras de padding/serialização
+- XML/JSON específicos do Bacen
+
+## Licença
 
 [CC0 1.0 (Public Domain)](LICENSE.md)
